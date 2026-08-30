@@ -77,6 +77,40 @@ async def get_column_by_id(
     return result.scalar_one_or_none()
 
 
+async def lock_column_for_update(
+    session: AsyncSession, column_id: uuid.UUID
+) -> BoardColumn | None:
+    """A row-level lock on the column itself, held until the caller's transaction
+    ends. It is the serialization point for everything that depends on a column's
+    contents: both invariants at stake — `UNIQUE (column_id, position)` and the
+    column's `wip_limit` — are per column, so this is the exact grain needed.
+    Locking the whole board instead (boards.lock_board_for_update, which TASK-05
+    uses to assign *column* positions) would also serialize moves into unrelated
+    columns of the same board.
+
+    Because PostgreSQL reads at READ COMMITTED, the transaction that waited here
+    re-reads afterwards and sees what the previous one committed: it counts the
+    cards the other just added and the positions it just wrote. That is what makes
+    "count, then insert" safe without a read-then-write race in Python.
+
+    Returns the column as it stands *after* the lock — `populate_existing` refreshes
+    whatever the caller had read before waiting, so a `wip_limit` another
+    transaction just changed is not applied stale — or None if it was deleted
+    meanwhile, which the caller turns into a 404 instead of a foreign key violation.
+
+    Callers must take this before the card lock (repositories/cards.py::
+    lock_card_for_update) and never hold two column locks: that single global
+    ordering is what rules out deadlocks.
+    """
+    result = await session.execute(
+        select(BoardColumn)
+        .where(BoardColumn.id == column_id)
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
+    return result.scalar_one_or_none()
+
+
 async def get_max_position(session: AsyncSession, board_id: uuid.UUID) -> float | None:
     result = await session.scalar(
         select(func.max(BoardColumn.position)).where(BoardColumn.board_id == board_id)

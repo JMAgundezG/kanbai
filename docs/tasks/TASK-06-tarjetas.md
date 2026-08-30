@@ -27,16 +27,16 @@ vez.
 
 ## Criterios de aceptación
 
-- [ ] Se crea, edita y borra una tarjeta, y el creador registrado es el actor
+- [x] Se crea, edita y borra una tarjeta, y el creador registrado es el actor
       autenticado, sea persona o agente.
-- [ ] Mover una tarjeta a otra columna y a otra posición persiste correctamente y el
+- [x] Mover una tarjeta a otra columna y a otra posición persiste correctamente y el
       orden se conserva al releer.
-- [ ] Dos movimientos concurrentes sobre la misma columna **no** dejan posiciones
+- [x] Dos movimientos concurrentes sobre la misma columna **no** dejan posiciones
       duplicadas ni pierden una tarjeta (test explícito de concurrencia).
-- [ ] Mover a una columna que ya alcanzó su límite WIP devuelve un error claro en
+- [x] Mover a una columna que ya alcanzó su límite WIP devuelve un error claro en
       español.
-- [ ] Una tarjeta de un tablero ajeno devuelve **404**.
-- [ ] `uv run poe check` en verde.
+- [x] Una tarjeta de un tablero ajeno devuelve **404**.
+- [x] `uv run poe check` en verde.
 
 ## Notas técnicas
 

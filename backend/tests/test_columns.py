@@ -268,6 +268,28 @@ async def test_borrar_la_ultima_columna_devuelve_409(client: AsyncClient, owner:
     assert still_there.status_code == HTTPStatus.OK
 
 
+async def test_borrar_columna_con_tarjetas_devuelve_409(
+    client: AsyncClient, owner: Person
+) -> None:
+    """La política la decidió TASK-05 (bloquear, no exigir destino) y TASK-06 la
+    hace real al existir el modelo `Card`."""
+    await _login(client, owner.email, OWNER_PASSWORD)
+    board = await _create_board(client)
+    column = await _create_column(client, board["id"], "Con tarjetas")
+    created = await client.post(
+        f"/api/v1/boards/{board['id']}/cards",
+        json={"column_id": column["id"], "title": "La que estorba"},
+    )
+    assert created.status_code == HTTPStatus.CREATED
+
+    response = await client.delete(f"/api/v1/boards/{board['id']}/columns/{column['id']}")
+
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json()["detail"] == "No se puede borrar una columna con tarjetas."
+    still_there = await client.get(f"/api/v1/boards/{board['id']}/columns/{column['id']}")
+    assert still_there.status_code == HTTPStatus.OK
+
+
 # --- reordenación -----------------------------------------------------------------
 
 

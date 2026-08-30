@@ -63,10 +63,15 @@ Asignación de valores:
   letra del criterio pero destruido el motivo de ser del esquema — se corrigió tras
   la code review de la tarea.
 
-**TASK-06 reutiliza exactamente este mecanismo** para `cards.position`: mismo tipo
-`float`, mismo patrón de constraint aplazable sobre `(column_id, position)`, mismo
-`GAP` al añadir, y punto medio `(antes.position + después.position) / 2` para mover
-una tarjeta entre dos vecinas sin tocar ninguna otra fila.
+**TASK-06 reutilizó exactamente este mecanismo** para `cards.position`: mismo tipo
+`float`, mismo patrón de constraint aplazable sobre `(column_id, position)`, el mismo
+`GAP` —importado de aquí, no redefinido— al añadir, y punto medio
+`(antes.position + después.position) / 2` para mover una tarjeta entre dos vecinas sin
+tocar ninguna otra fila. Lo que TASK-06 añadió por su cuenta es
+`lock_column_for_update` (bloqueo de la fila de la *columna*, no del tablero: los
+invariantes de una tarjeta —unicidad de posición y `wip_limit`— son por columna) y la
+recompactación de una columna cuando la precisión del `float` se agota. Ver
+[tarjetas.md](tarjetas.md).
 
 ## Columnas iniciales al crear un tablero
 
@@ -90,12 +95,17 @@ columnas quedan, no cuál en concreto se borra.
 
 ## Borrar una columna con tarjetas
 
-**Decisión: se bloquea con `409 Conflict`**, no se exige destino. Las tarjetas no
-existen todavía (TASK-06), así que hoy no hay ninguna comprobación real que hacer —
-`services/columns.py::delete_column` deja el punto de extensión marcado con un
-comentario explícito. **TASK-06 añade, al introducir el modelo `Card`, la
-comprobación real** (contar tarjetas de la columna antes de borrar) y su test
-(`borrar una columna con tarjetas devuelve 409`).
+**Se bloquea con `409 Conflict`**, no se exige destino: mover las tarjetas a otra
+columna antes de borrar es una operación explícita del usuario, más simple de
+razonar que un reasignado implícito. TASK-06 hizo real la comprobación al introducir
+el modelo `Card` — `services/columns.py::delete_column` cuenta las tarjetas de la
+columna y responde "No se puede borrar una columna con tarjetas." si hay alguna
+(test: `test_borrar_columna_con_tarjetas_devuelve_409`).
+
+El recuento se hace **con la fila de la columna ya bloqueada**
+(`lock_column_for_update`): sin ese bloqueo, una tarjeta creada entre el recuento y
+el `DELETE` desaparecería en silencio por el `ON DELETE CASCADE` de
+`cards.column_id`.
 
 ## Endpoints
 
@@ -142,9 +152,9 @@ columnas".
 
 ## No entra en esta feature
 
-La aplicación real del `wip_limit` (se aplicará al mover tarjetas, TASK-06), la
-comprobación real de "columna con tarjetas" al borrar (TASK-06), y plantillas de
-columnas por tablero configurables.
+Plantillas de columnas por tablero configurables. La aplicación real del `wip_limit`
+y la comprobación de "columna con tarjetas" al borrar las añadió TASK-06 (ver
+[tarjetas.md](tarjetas.md)).
 
 ## Contrato
 

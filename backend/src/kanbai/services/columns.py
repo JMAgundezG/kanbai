@@ -10,6 +10,7 @@ from kanbai.core.exceptions import ConflictError, NotFoundError, ValidationError
 from kanbai.models.actor import Actor
 from kanbai.models.board_column import BoardColumn
 from kanbai.repositories import boards as boards_repository
+from kanbai.repositories import cards as cards_repository
 from kanbai.repositories import columns as columns_repository
 from kanbai.services import boards as boards_service
 
@@ -108,10 +109,14 @@ async def delete_column(
     remaining = await columns_repository.count_columns_for_board(session, board_id)
     if remaining <= 1:
         raise ConflictError("No se puede borrar la última columna del tablero.")
-    # TASK-06 adds the check here: if the column has cards, raise
-    # ConflictError("No se puede borrar una columna con tarjetas."). No cards model
-    # exists yet, so there is nothing to query — this comment is the contract
-    # TASK-06 must honor when it adds `Card`. See docs/plans/spec-TASK-05.md.
+    # The lock goes before the count (TASK-06): cards.column_id is ON DELETE
+    # CASCADE, so a card created between counting and deleting would be wiped out
+    # silently. Holding the column's row lock serializes this against
+    # services/cards.py, which takes the same lock before adding to a column.
+    if await columns_repository.lock_column_for_update(session, column_id) is None:
+        raise NotFoundError(_COLUMN_NOT_FOUND_MESSAGE)  # borrada por otra transacción
+    if await cards_repository.count_cards_in_column(session, column_id) > 0:
+        raise ConflictError("No se puede borrar una columna con tarjetas.")
     await columns_repository.delete_column(session, column)
     await session.commit()
 

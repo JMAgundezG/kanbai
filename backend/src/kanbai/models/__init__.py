@@ -4,6 +4,7 @@ from kanbai.models.actor import Actor, Person
 from kanbai.models.board import Board
 from kanbai.models.board_column import BoardColumn
 from kanbai.models.board_member import BoardMember
+from kanbai.models.card import Card
 from kanbai.models.session import AuthSession
 
-__all__ = ["Actor", "AuthSession", "Board", "BoardColumn", "BoardMember", "Person"]
+__all__ = ["Actor", "AuthSession", "Board", "BoardColumn", "BoardMember", "Card", "Person"]
