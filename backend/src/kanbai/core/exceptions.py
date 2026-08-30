@@ -35,6 +35,16 @@ class ValidationError(KanbaiError):
     default_message = "Los datos enviados no son válidos."
 
 
+class AuthorizationError(KanbaiError):
+    """The actor already knows the resource exists — they are a member of its
+    board — but lacks the role an action requires (e.g. renaming a board without
+    being its owner). Distinct from NotFoundError, which is for an actor with no
+    visibility into the resource at all and must never confirm it exists."""
+
+    status_code = HTTPStatus.FORBIDDEN
+    default_message = "No tienes permisos suficientes para esta acción."
+
+
 class AuthenticationError(KanbaiError):
     """Credentials missing, invalid, or a session that no longer resolves.
 

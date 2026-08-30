@@ -2,11 +2,12 @@
 
 from fastapi import APIRouter
 
-from kanbai.api.routers import auth, health
+from kanbai.api.routers import auth, boards, health
 
 
 def build_api_router(prefix: str) -> APIRouter:
     api_router = APIRouter(prefix=prefix)
     api_router.include_router(health.router)
     api_router.include_router(auth.router)
+    api_router.include_router(boards.router)
     return api_router

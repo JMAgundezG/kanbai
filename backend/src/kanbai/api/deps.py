@@ -2,7 +2,7 @@
 
 from typing import Annotated
 
-from fastapi import Depends, Request
+from fastapi import Depends, Query, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from kanbai.core.config import Settings
@@ -37,3 +37,28 @@ async def get_current_actor(request: Request, session: SessionDep, settings: Set
 
 
 CurrentActor = Annotated[Actor, Depends(get_current_actor)]
+
+
+class PaginationParams:
+    """Query params for any paginated listing. `size` caps at 100 through FastAPI
+    validation itself (422 above that), so "a maximum is applied" is part of the
+    contract, not a silent truncation buried in a service."""
+
+    def __init__(
+        self,
+        page: Annotated[int, Query(ge=1, description="Página, empieza en 1")] = 1,
+        size: Annotated[int, Query(ge=1, le=100, description="Tamaño de página, máximo 100")] = 20,
+    ) -> None:
+        self.page = page
+        self.size = size
+
+    @property
+    def limit(self) -> int:
+        return self.size
+
+    @property
+    def offset(self) -> int:
+        return (self.page - 1) * self.size
+
+
+PaginationDep = Annotated[PaginationParams, Depends()]

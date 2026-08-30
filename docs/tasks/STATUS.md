@@ -11,8 +11,8 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 | TASK-01 | [Scaffold del backend (uv + FastAPI)](TASK-01-scaffold-backend.md) | Alta | — | Completada | Claude | Base de todo lo demás · [plan](../plans/plan-TASK-01.md) · [spec](../plans/spec-TASK-01.md) · [feature](../features/health.md) |
 | TASK-02 | [Scaffold del frontend (Vite + React + HeroUI)](TASK-02-scaffold-frontend.md) | Alta | TASK-01 | Completada | Claude | [plan](../plans/plan-TASK-02.md) · [spec](../plans/spec-TASK-02.md) · [feature](../features/estilos-frontend.md) |
 | TASK-03 | [Actores y autenticación de personas](TASK-03-actores-y-sesion.md) | Alta | TASK-01 | Completada | Claude | El actor (persona\|agente) es la pieza central del dominio · [plan](../plans/plan-TASK-03.md) · [spec](../plans/spec-TASK-03.md) · [feature](../features/actores-y-autenticacion.md) |
-| TASK-04 | [Tableros y membresía](TASK-04-tableros-y-membresia.md) | Alta | TASK-03 | Pendiente | — | Unidad de autorización de todo el producto · desbloqueada por TASK-03 |
-| TASK-05 | [Columnas del tablero](TASK-05-columnas.md) | Alta | TASK-04 | Pendiente | — | Define el esquema de posiciones que reutiliza TASK-06 |
+| TASK-04 | [Tableros y membresía](TASK-04-tableros-y-membresia.md) | Alta | TASK-03 | Completada | Claude | Unidad de autorización de todo el producto · [plan](../plans/plan-TASK-04.md) · [spec](../plans/spec-TASK-04.md) · [feature](../features/tableros-y-membresia.md) |
+| TASK-05 | [Columnas del tablero](TASK-05-columnas.md) | Alta | TASK-04 | Pendiente | — | Define el esquema de posiciones que reutiliza TASK-06 · desbloqueada por TASK-04 |
 | TASK-06 | [Tarjetas: CRUD y movimiento](TASK-06-tarjetas.md) | Alta | TASK-05 | Pendiente | — | Movimiento atómico; test de concurrencia obligatorio |
 | TASK-07 | [Frontend: sesión y armazón](TASK-07-frontend-sesion.md) | Alta | TASK-02, TASK-03 | Pendiente | — | Acceso, rutas protegidas y layout común · desbloqueada por TASK-03 |
 | TASK-08 | [Frontend: tablero con arrastrar y soltar](TASK-08-frontend-tablero.md) | Alta | TASK-06, TASK-07 | Pendiente | — | Arrastrar accesible, también con teclado |
@@ -30,11 +30,11 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 
 | Estado | Nº |
 |--------|----|
-| Pendiente | 14 |
+| Pendiente | 13 |
 | En progreso | 0 |
 | En revisión | 0 |
 | Bloqueada | 0 |
-| Completada | 3 |
+| Completada | 4 |
 | **Total** | **17** |
 
 ## Orden sugerido
