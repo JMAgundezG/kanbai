@@ -4,6 +4,319 @@
  */
 
 export interface paths {
+    "/api/v1/agents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista los agentes propios */
+        get: operations["list_agents_api_v1_agents_get"];
+        put?: never;
+        /** Da de alta un agente propio */
+        post: operations["create_agent_api_v1_agents_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{agent_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtiene un agente propio por id */
+        get: operations["get_agent_api_v1_agents__agent_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{agent_id}/keys": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista las API keys del agente (sin el secreto) */
+        get: operations["list_api_keys_api_v1_agents__agent_id__keys_get"];
+        put?: never;
+        /** Emite una API key nueva para el agente (el valor en claro solo se ve aquí) */
+        post: operations["create_api_key_api_v1_agents__agent_id__keys_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/agents/{agent_id}/keys/{key_id}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Revoca una API key (idempotente) */
+        post: operations["revoke_api_key_api_v1_agents__agent_id__keys__key_id__revoke_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Inicia sesión con email y contraseña */
+        post: operations["login_api_v1_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cierra la sesión actual
+         * @description Idempotent: with no cookie, or an already-expired one, this still returns
+         *     204 — closing a session that is not open is not an error.
+         */
+        post: operations["logout_api_v1_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Actor autenticado en la sesión actual */
+        get: operations["me_api_v1_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista los tableros de los que el actor autenticado es miembro */
+        get: operations["list_boards_api_v1_boards_get"];
+        put?: never;
+        /** Crea un tablero nuevo */
+        post: operations["create_board_api_v1_boards_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtiene un tablero por id */
+        get: operations["get_board_api_v1_boards__board_id__get"];
+        put?: never;
+        post?: never;
+        /** Borra un tablero (solo el owner) */
+        delete: operations["delete_board_api_v1_boards__board_id__delete"];
+        options?: never;
+        head?: never;
+        /** Renombra un tablero (solo el owner) */
+        patch: operations["rename_board_api_v1_boards__board_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/cards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista las tarjetas de un tablero, ordenadas por columna y posición */
+        get: operations["list_cards_api_v1_boards__board_id__cards_get"];
+        put?: never;
+        /** Crea una tarjeta al final de una columna */
+        post: operations["create_card_api_v1_boards__board_id__cards_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/cards/{card_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtiene una tarjeta por id */
+        get: operations["get_card_api_v1_boards__board_id__cards__card_id__get"];
+        /** Sustituye el título y la descripción de una tarjeta */
+        put: operations["update_card_api_v1_boards__board_id__cards__card_id__put"];
+        post?: never;
+        /** Borra una tarjeta */
+        delete: operations["delete_card_api_v1_boards__board_id__cards__card_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/cards/{card_id}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mueve una tarjeta a una columna y una posición, en una sola operación atómica
+         * @description POST, not PUT: the body is a relative intent ("put it in this column, in
+         *     this slot"), resolved against the column's live contents, not the card's final
+         *     state. Repeating the call can legitimately yield a different `position`, so the
+         *     idempotence PUT promises would not hold — unlike PUT .../columns/reorder, which
+         *     does send the complete desired order. The response carries the position the
+         *     server actually computed, which is rarely the index the client sent.
+         */
+        post: operations["move_card_api_v1_boards__board_id__cards__card_id__move_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/columns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista las columnas de un tablero, ordenadas por posición */
+        get: operations["list_columns_api_v1_boards__board_id__columns_get"];
+        put?: never;
+        /** Crea una columna al final del tablero */
+        post: operations["create_column_api_v1_boards__board_id__columns_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/columns/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reordena todas las columnas de un tablero en una sola llamada */
+        put: operations["reorder_columns_api_v1_boards__board_id__columns_reorder_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/columns/{column_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Obtiene una columna por id */
+        get: operations["get_column_api_v1_boards__board_id__columns__column_id__get"];
+        /** Sustituye nombre y límite de trabajo en curso de una columna */
+        put: operations["update_column_api_v1_boards__board_id__columns__column_id__put"];
+        post?: never;
+        /** Borra una columna (409 si es la última, o si tiene tarjetas desde TASK-06) */
+        delete: operations["delete_column_api_v1_boards__board_id__columns__column_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lista los miembros de un tablero */
+        get: operations["list_members_api_v1_boards__board_id__members_get"];
+        put?: never;
+        /** Añade un miembro a un tablero (solo el owner; persona o agente por igual) */
+        post: operations["add_member_api_v1_boards__board_id__members_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/boards/{board_id}/members/{member_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Quita a un miembro del tablero (el owner, o el propio miembro) */
+        delete: operations["remove_member_api_v1_boards__board_id__members__member_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/health/ready": {
         parameters: {
             query?: never;
@@ -43,6 +356,293 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /**
+         * ActorRead
+         * @description Deliberately without `email`: an actor is identified by type and visible
+         *     name, not by its credential. Keeps this schema agnostic of the actor's kind —
+         *     when TASK-09 adds agents, the same schema serves them without changes.
+         */
+        ActorRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Display Name */
+            display_name: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "person" | "agent";
+        };
+        /** AgentCreate */
+        AgentCreate: {
+            /** Description */
+            description?: string | null;
+            /** Display Name */
+            display_name: string;
+        };
+        /** AgentRead */
+        AgentRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Description */
+            description: string | null;
+            /** Display Name */
+            display_name: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Kind
+             * @constant
+             */
+            kind: "agent";
+            /**
+             * Owner Person Id
+             * Format: uuid
+             */
+            owner_person_id: string;
+        };
+        /**
+         * ApiKeyCreated
+         * @description Returned only by the creation endpoint: `api_key` is the one and only
+         *     time the plaintext value is available anywhere.
+         */
+        ApiKeyCreated: {
+            /** Api Key */
+            api_key: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Prefix */
+            prefix: string;
+            /** Revoked At */
+            revoked_at: string | null;
+        };
+        /**
+         * ApiKeyRead
+         * @description Never carries the secret: `prefix` is the only part of the key that is
+         *     ever readable again after creation.
+         */
+        ApiKeyRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Prefix */
+            prefix: string;
+            /** Revoked At */
+            revoked_at: string | null;
+        };
+        /** BoardCreate */
+        BoardCreate: {
+            /** Name */
+            name: string;
+        };
+        /** BoardMemberCreate */
+        BoardMemberCreate: {
+            /**
+             * Actor Id
+             * Format: uuid
+             */
+            actor_id: string;
+            /**
+             * Role
+             * @default member
+             * @enum {string}
+             */
+            role: "owner" | "member";
+        };
+        /** BoardMemberRead */
+        BoardMemberRead: {
+            actor: components["schemas"]["ActorRead"];
+            /**
+             * Board Id
+             * Format: uuid
+             */
+            board_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "owner" | "member";
+        };
+        /** BoardRead */
+        BoardRead: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /**
+             * Role
+             * @enum {string}
+             */
+            role: "owner" | "member";
+        };
+        /** BoardUpdate */
+        BoardUpdate: {
+            /** Name */
+            name: string;
+        };
+        /** CardCreate */
+        CardCreate: {
+            /**
+             * Column Id
+             * Format: uuid
+             */
+            column_id: string;
+            /** Description */
+            description?: string | null;
+            /** Title */
+            title: string;
+        };
+        /** CardMove */
+        CardMove: {
+            /**
+             * Column Id
+             * Format: uuid
+             */
+            column_id: string;
+            /** Position */
+            position: number;
+        };
+        /** CardRead */
+        CardRead: {
+            /**
+             * Board Id
+             * Format: uuid
+             */
+            board_id: string;
+            /**
+             * Column Id
+             * Format: uuid
+             */
+            column_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Created By Actor Id
+             * Format: uuid
+             */
+            created_by_actor_id: string;
+            /** Description */
+            description: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Position */
+            position: number;
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** CardUpdate */
+        CardUpdate: {
+            /** Description */
+            description?: string | null;
+            /** Title */
+            title: string;
+        };
+        /** ColumnCreate */
+        ColumnCreate: {
+            /** Name */
+            name: string;
+            /** Wip Limit */
+            wip_limit?: number | null;
+        };
+        /** ColumnRead */
+        ColumnRead: {
+            /**
+             * Board Id
+             * Format: uuid
+             */
+            board_id: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Position */
+            position: number;
+            /** Wip Limit */
+            wip_limit: number | null;
+        };
+        /** ColumnReorder */
+        ColumnReorder: {
+            /** Column Ids */
+            column_ids: string[];
+        };
+        /** ColumnUpdate */
+        ColumnUpdate: {
+            /** Name */
+            name: string;
+            /** Wip Limit */
+            wip_limit?: number | null;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
          * HealthRead
          * @description Liveness: the process is up. Says nothing about its dependencies.
          */
@@ -53,6 +653,85 @@ export interface components {
              * @constant
              */
             status: "ok";
+        };
+        /** LoginRequest */
+        LoginRequest: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /**
+             * Password
+             * Format: password
+             */
+            password: string;
+        };
+        /** Page[AgentRead] */
+        Page_AgentRead_: {
+            /** Items */
+            items: components["schemas"]["AgentRead"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[ApiKeyRead] */
+        Page_ApiKeyRead_: {
+            /** Items */
+            items: components["schemas"]["ApiKeyRead"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[BoardMemberRead] */
+        Page_BoardMemberRead_: {
+            /** Items */
+            items: components["schemas"]["BoardMemberRead"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[BoardRead] */
+        Page_BoardRead_: {
+            /** Items */
+            items: components["schemas"]["BoardRead"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[CardRead] */
+        Page_CardRead_: {
+            /** Items */
+            items: components["schemas"]["CardRead"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
+        };
+        /** Page[ColumnRead] */
+        Page_ColumnRead_: {
+            /** Items */
+            items: components["schemas"]["ColumnRead"][];
+            /** Page */
+            page: number;
+            /** Size */
+            size: number;
+            /** Total */
+            total: number;
         };
         /**
          * ReadinessRead
@@ -70,6 +749,19 @@ export interface components {
              */
             status: "ok" | "error";
         };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
     };
     responses: never;
     parameters: never;
@@ -79,6 +771,1219 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    list_agents_api_v1_agents_get: {
+        parameters: {
+            query?: {
+                /** @description Página, empieza en 1 */
+                page?: number;
+                /** @description Tamaño de página, máximo 100 */
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_AgentRead_"];
+                };
+            };
+            /** @description Solo una persona puede gestionar agentes. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_agent_api_v1_agents_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRead"];
+                };
+            };
+            /** @description Solo una persona puede gestionar agentes. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_agent_api_v1_agents__agent_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AgentRead"];
+                };
+            };
+            /** @description Solo una persona puede gestionar agentes. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El agente (o la API key) no existe o no te pertenece. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_api_keys_api_v1_agents__agent_id__keys_get: {
+        parameters: {
+            query?: {
+                /** @description Página, empieza en 1 */
+                page?: number;
+                /** @description Tamaño de página, máximo 100 */
+                size?: number;
+            };
+            header?: never;
+            path: {
+                agent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_ApiKeyRead_"];
+                };
+            };
+            /** @description Solo una persona puede gestionar agentes. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El agente (o la API key) no existe o no te pertenece. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_api_key_api_v1_agents__agent_id__keys_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKeyCreated"];
+                };
+            };
+            /** @description Solo una persona puede gestionar agentes. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El agente (o la API key) no existe o no te pertenece. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    revoke_api_key_api_v1_agents__agent_id__keys__key_id__revoke_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent_id: string;
+                key_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiKeyRead"];
+                };
+            };
+            /** @description Solo una persona puede gestionar agentes. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El agente (o la API key) no existe o no te pertenece. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    login_api_v1_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActorRead"];
+                };
+            };
+            /** @description Las credenciales no son válidas. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_api_v1_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    me_api_v1_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActorRead"];
+                };
+            };
+            /** @description No hay una sesión activa. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_boards_api_v1_boards_get: {
+        parameters: {
+            query?: {
+                /** @description Página, empieza en 1 */
+                page?: number;
+                /** @description Tamaño de página, máximo 100 */
+                size?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_BoardRead_"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_board_api_v1_boards_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoardCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_board_api_v1_boards__board_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_board_api_v1_boards__board_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Eres miembro, pero no owner. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No eres miembro de este tablero. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rename_board_api_v1_boards__board_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoardUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardRead"];
+                };
+            };
+            /** @description Eres miembro, pero no owner. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No eres miembro de este tablero. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_cards_api_v1_boards__board_id__cards_get: {
+        parameters: {
+            query?: {
+                /** @description Filtra las tarjetas de una sola columna */
+                column_id?: string | null;
+                /** @description Página, empieza en 1 */
+                page?: number;
+                /** @description Tamaño de página, máximo 100 */
+                size?: number;
+            };
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_CardRead_"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la tarjeta o la columna no existen. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_card_api_v1_boards__board_id__cards_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CardCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CardRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la tarjeta o la columna no existen. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description La columna de destino ha alcanzado su límite de trabajo en curso. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_card_api_v1_boards__board_id__cards__card_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                card_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CardRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la tarjeta o la columna no existen. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_card_api_v1_boards__board_id__cards__card_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                card_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CardUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CardRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la tarjeta o la columna no existen. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_card_api_v1_boards__board_id__cards__card_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                card_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No eres miembro de este tablero, o la tarjeta o la columna no existen. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    move_card_api_v1_boards__board_id__cards__card_id__move_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                card_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CardMove"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CardRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la tarjeta o la columna no existen. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description La columna de destino ha alcanzado su límite de trabajo en curso. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_columns_api_v1_boards__board_id__columns_get: {
+        parameters: {
+            query?: {
+                /** @description Página, empieza en 1 */
+                page?: number;
+                /** @description Tamaño de página, máximo 100 */
+                size?: number;
+            };
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_ColumnRead_"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la columna no existe. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_column_api_v1_boards__board_id__columns_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ColumnCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ColumnRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la columna no existe. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_columns_api_v1_boards__board_id__columns_reorder_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ColumnReorder"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ColumnRead"][];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la columna no existe. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description La lista no coincide exactamente con las columnas actuales del tablero. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    get_column_api_v1_boards__board_id__columns__column_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                column_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ColumnRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la columna no existe. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_column_api_v1_boards__board_id__columns__column_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                column_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ColumnUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ColumnRead"];
+                };
+            };
+            /** @description No eres miembro de este tablero, o la columna no existe. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_column_api_v1_boards__board_id__columns__column_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                column_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No eres miembro de este tablero, o la columna no existe. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Es la última columna del tablero. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_members_api_v1_boards__board_id__members_get: {
+        parameters: {
+            query?: {
+                /** @description Página, empieza en 1 */
+                page?: number;
+                /** @description Tamaño de página, máximo 100 */
+                size?: number;
+            };
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Page_BoardMemberRead_"];
+                };
+            };
+            /** @description No eres miembro de este tablero. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    add_member_api_v1_boards__board_id__members_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BoardMemberCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BoardMemberRead"];
+                };
+            };
+            /** @description Eres miembro, pero no owner. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No eres miembro de este tablero. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description El actor ya es miembro del tablero, o es un agente cuya persona propietaria no tiene en este tablero un rol igual o superior. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    remove_member_api_v1_boards__board_id__members__member_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                board_id: string;
+                member_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Eres miembro, pero no owner. */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description No eres miembro de este tablero. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Es el único owner del tablero. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     readiness_api_v1_health_ready_get: {
         parameters: {
             query?: never;

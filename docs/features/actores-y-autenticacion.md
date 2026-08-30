@@ -80,7 +80,7 @@ API keys: ver [`agentes-y-api-keys.md`](agentes-y-api-keys.md).
 
 ## Contrato
 
-`backend/openapi.json` incluye ahora `POST /api/v1/auth/login`,
-`POST /api/v1/auth/logout` y `GET /api/v1/auth/me`. El frontend no los consume
-todavía (llega en TASK-07); no se ha regenerado `frontend/src/api/schema.d.ts`
-porque no hay ningún código en `frontend/` que lo use aún.
+`backend/openapi.json` incluye `POST /api/v1/auth/login`,
+`POST /api/v1/auth/logout` y `GET /api/v1/auth/me`. El frontend los consume
+desde [TASK-07](../tasks/TASK-07-frontend-sesion.md) — ver
+[`frontend-sesion-y-armazon.md`](frontend-sesion-y-armazon.md).
