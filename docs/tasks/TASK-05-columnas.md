@@ -22,16 +22,27 @@ pueden crear, renombrar, reordenar y limitar en trabajo en curso.
 
 ## Criterios de aceptación
 
-- [ ] Crear un tablero deja un juego de columnas inicial razonable (decidido en la spec).
+- [ ] Crear un tablero deja un juego de columnas inicial razonable: **decidido —
+      siempre tres columnas fijas en español, "Por hacer" / "En curso" / "Hecho"**,
+      sin plantillas configurables.
 - [ ] Reordenar N columnas en una llamada deja un orden estable y sin huecos ni
       posiciones repetidas.
-- [ ] Borrar una columna con tarjetas está impedido o exige destino (se decide en la
-      spec y se refleja aquí antes de implementar).
+- [ ] Borrar una columna con tarjetas está impedido o exige destino: **decidido —
+      se bloquea con `409 Conflict`** (no se exige destino). Las tarjetas no existen
+      todavía (TASK-06); el servicio deja el punto de extensión comentado y TASK-06
+      añade la comprobación real (contar tarjetas de la columna) y su test al añadir
+      el modelo `Card`.
 - [ ] Operar sobre una columna de un tablero ajeno devuelve **404**.
 - [ ] `uv run poe check` en verde.
 
 ## Notas técnicas
 
-- La representación de la posición (entero con reindexado frente a valor fraccional) se
-  decide aquí y **se reutiliza tal cual en las tarjetas** (TASK-06): que no acaben
-  siendo dos mecanismos distintos.
+- **Representación de la posición: `float` con `UniqueConstraint` aplazable
+  (`DEFERRABLE INITIALLY DEFERRED`) por tablero**, no entero con reindexado. Permite
+  mover una fila con un único `UPDATE` sin desplazar el resto — la propiedad que
+  TASK-06 exige para mover tarjetas de forma atómica bajo concurrencia. Detalle
+  completo en `docs/plans/spec-TASK-05.md`. TASK-06 reutiliza el mismo mecanismo
+  (`cards.position`, constraint sobre `(column_id, position)`).
+- Cualquier miembro del tablero (no solo `owner`) puede gestionar columnas: crear,
+  renombrar, reordenar y borrar. Es trabajo operativo del flujo, no administración
+  del tablero (que sigue siendo solo-`owner`, TASK-04).

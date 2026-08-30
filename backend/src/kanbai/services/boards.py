@@ -33,12 +33,21 @@ async def list_boards(
 
 
 async def create_board(session: AsyncSession, *, actor: Actor, name: str) -> tuple[Board, str]:
-    """A board never exists without an owner, not even for an instant observable
-    from outside: creation and the owner membership share one transaction."""
+    """A board never exists without an owner or its starting columns, not even for
+    an instant observable from outside: creation, the owner membership, and the
+    default columns share one transaction.
+
+    The import of `services.columns` is deferred to inside the function body:
+    that module imports this one back (it needs `get_board` to authorize its own
+    operations), so importing it at module level here would be circular.
+    """
+    from kanbai.services import columns as columns_service
+
     board = await boards_repository.create_board(session, name=name)
     await board_members_repository.add_member(
         session, board_id=board.id, actor_id=actor.id, role=OWNER
     )
+    await columns_service.seed_default_columns(session, board_id=board.id)
     await session.commit()
     return board, OWNER
 

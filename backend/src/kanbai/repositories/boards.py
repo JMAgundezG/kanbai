@@ -61,3 +61,14 @@ async def rename_board(session: AsyncSession, board: Board, name: str) -> Board:
 
 async def delete_board(session: AsyncSession, board: Board) -> None:
     await session.delete(board)
+
+
+async def lock_board_for_update(session: AsyncSession, board_id: uuid.UUID) -> None:
+    """A row-level lock on the board itself, held until the caller's transaction
+    ends (commit or rollback). Used by services/columns.py to serialize the
+    operations that assign a column's `position` (create, reorder) on the same
+    board: without it, two concurrent creates can both read the same
+    MAX(position), both compute the same next value, and collide on the
+    deferrable unique constraint at commit — one of the two requests then fails
+    with an unhandled 500 instead of getting a distinct, correct position."""
+    await session.execute(select(Board.id).where(Board.id == board_id).with_for_update())

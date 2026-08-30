@@ -162,6 +162,125 @@
         "title": "BoardUpdate",
         "type": "object"
       },
+      "ColumnCreate": {
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "wip_limit": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wip Limit"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ColumnCreate",
+        "type": "object"
+      },
+      "ColumnRead": {
+        "properties": {
+          "board_id": {
+            "format": "uuid",
+            "title": "Board Id",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "number"
+          },
+          "wip_limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wip Limit"
+          }
+        },
+        "required": [
+          "id",
+          "board_id",
+          "name",
+          "wip_limit",
+          "position",
+          "created_at"
+        ],
+        "title": "ColumnRead",
+        "type": "object"
+      },
+      "ColumnReorder": {
+        "properties": {
+          "column_ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Column Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "column_ids"
+        ],
+        "title": "ColumnReorder",
+        "type": "object"
+      },
+      "ColumnUpdate": {
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "wip_limit": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wip Limit"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ColumnUpdate",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -269,6 +388,37 @@
           "size"
         ],
         "title": "Page[BoardRead]",
+        "type": "object"
+      },
+      "Page_ColumnRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ColumnRead"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "size": {
+            "title": "Size",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "size"
+        ],
+        "title": "Page[ColumnRead]",
         "type": "object"
       },
       "ReadinessRead": {
@@ -669,6 +819,356 @@
         "summary": "Renombra un tablero (solo el owner)",
         "tags": [
           "boards"
+        ]
+      }
+    },
+    "/api/v1/boards/{board_id}/columns": {
+      "get": {
+        "operationId": "list_columns_api_v1_boards__board_id__columns_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "board_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Board Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Página, empieza en 1",
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "description": "Página, empieza en 1",
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Tamaño de página, máximo 100",
+            "in": "query",
+            "name": "size",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "description": "Tamaño de página, máximo 100",
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Size",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Page_ColumnRead_"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No eres miembro de este tablero, o la columna no existe."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Lista las columnas de un tablero, ordenadas por posición",
+        "tags": [
+          "columns"
+        ]
+      },
+      "post": {
+        "operationId": "create_column_api_v1_boards__board_id__columns_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "board_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Board Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ColumnCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ColumnRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No eres miembro de este tablero, o la columna no existe."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Crea una columna al final del tablero",
+        "tags": [
+          "columns"
+        ]
+      }
+    },
+    "/api/v1/boards/{board_id}/columns/reorder": {
+      "put": {
+        "operationId": "reorder_columns_api_v1_boards__board_id__columns_reorder_put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "board_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Board Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ColumnReorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ColumnRead"
+                  },
+                  "title": "Response Reorder Columns Api V1 Boards  Board Id  Columns Reorder Put",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No eres miembro de este tablero, o la columna no existe."
+          },
+          "422": {
+            "description": "La lista no coincide exactamente con las columnas actuales del tablero."
+          }
+        },
+        "summary": "Reordena todas las columnas de un tablero en una sola llamada",
+        "tags": [
+          "columns"
+        ]
+      }
+    },
+    "/api/v1/boards/{board_id}/columns/{column_id}": {
+      "delete": {
+        "operationId": "delete_column_api_v1_boards__board_id__columns__column_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "board_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Board Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "column_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Column Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No eres miembro de este tablero, o la columna no existe."
+          },
+          "409": {
+            "description": "Es la última columna del tablero."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Borra una columna (409 si es la última, o si tiene tarjetas desde TASK-06)",
+        "tags": [
+          "columns"
+        ]
+      },
+      "get": {
+        "operationId": "get_column_api_v1_boards__board_id__columns__column_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "board_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Board Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "column_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Column Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ColumnRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No eres miembro de este tablero, o la columna no existe."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Obtiene una columna por id",
+        "tags": [
+          "columns"
+        ]
+      },
+      "put": {
+        "operationId": "update_column_api_v1_boards__board_id__columns__column_id__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "board_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Board Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "column_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Column Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ColumnUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ColumnRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "No eres miembro de este tablero, o la columna no existe."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sustituye nombre y límite de trabajo en curso de una columna",
+        "tags": [
+          "columns"
         ]
       }
     },

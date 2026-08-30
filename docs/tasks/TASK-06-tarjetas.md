@@ -42,4 +42,13 @@ vez.
 
 - La atomicidad del movimiento es el punto delicado: resuélvelo en base de datos
   (bloqueo o actualización condicional), no con lecturas previas en Python.
-- Reutiliza el esquema de posiciones decidido en TASK-05.
+- Reutiliza el esquema de posiciones decidido en TASK-05: `position` como `float`
+  con `UniqueConstraint(column_id, position)` aplazable
+  (`DEFERRABLE INITIALLY DEFERRED`), mismo `GAP` que `repositories/columns.py::GAP`
+  al añadir, punto medio entre vecinas al mover. Ver
+  `docs/features/columnas-de-tablero.md`.
+- **Pendiente de TASK-05**: al añadir el modelo `Card`, implementa la comprobación
+  real en `services/columns.py::delete_column` (borrar una columna con tarjetas
+  devuelve `409`, política ya decidida) y su test
+  (`test_borrar_columna_con_tarjetas_devuelve_409`). El punto de extensión está
+  marcado con un comentario en el código.
