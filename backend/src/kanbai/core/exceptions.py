@@ -33,3 +33,15 @@ class ConflictError(KanbaiError):
 class ValidationError(KanbaiError):
     status_code = HTTPStatus.UNPROCESSABLE_ENTITY
     default_message = "Los datos enviados no son válidos."
+
+
+class AuthenticationError(KanbaiError):
+    """Credentials missing, invalid, or a session that no longer resolves.
+
+    The default message covers "no session at all"; login failure passes its own
+    message, deliberately identical whether the email does not exist or the
+    password is wrong — the response must never reveal which.
+    """
+
+    status_code = HTTPStatus.UNAUTHORIZED
+    default_message = "No has iniciado sesión."

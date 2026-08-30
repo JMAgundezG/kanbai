@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     api_v1_prefix: str = "/api/v1"
     cors_origins: list[AnyHttpUrl] = [AnyHttpUrl("http://localhost:5173")]
 
+    session_cookie_name: str = "kanbai_session"
+    session_ttl_days: int = 14
+
 
 @lru_cache
 def get_settings() -> Settings:
