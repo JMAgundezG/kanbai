@@ -268,9 +268,7 @@ async def test_borrar_la_ultima_columna_devuelve_409(client: AsyncClient, owner:
     assert still_there.status_code == HTTPStatus.OK
 
 
-async def test_borrar_columna_con_tarjetas_devuelve_409(
-    client: AsyncClient, owner: Person
-) -> None:
+async def test_borrar_columna_con_tarjetas_devuelve_409(client: AsyncClient, owner: Person) -> None:
     """La política la decidió TASK-05 (bloquear, no exigir destino) y TASK-06 la
     hace real al existir el modelo `Card`."""
     await _login(client, owner.email, OWNER_PASSWORD)

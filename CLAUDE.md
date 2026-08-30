@@ -167,7 +167,7 @@ de `features/` del frontend no importa de otro `features/`: lo común sube a
 |---------|----------|
 | `uv sync` | Instala el entorno desde `uv.lock` |
 | `uv run poe dev` | Levanta la API con recarga en `:8000` |
-| `uv run poe lint` | `ruff check` |
+| `uv run poe lint` | `ruff check` + `ruff format --check` |
 | `uv run poe format` | `ruff format` + `ruff check --fix` |
 | `uv run poe typecheck` | `mypy` |
 | `uv run poe test` | `pytest` |

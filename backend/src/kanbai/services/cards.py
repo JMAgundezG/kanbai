@@ -141,9 +141,7 @@ async def get_card(
     session: AsyncSession, *, actor: Actor, board_id: uuid.UUID, card_id: uuid.UUID
 ) -> Card:
     await boards_service.get_board(session, actor=actor, board_id=board_id)
-    return await _get_card_or_404(
-        session, board_id=board_id, card_id=card_id, actor_id=actor.id
-    )
+    return await _get_card_or_404(session, board_id=board_id, card_id=card_id, actor_id=actor.id)
 
 
 async def create_card(
@@ -189,9 +187,7 @@ async def update_card(
     description: str | None,
 ) -> Card:
     await boards_service.get_board(session, actor=actor, board_id=board_id)
-    card = await _get_card_or_404(
-        session, board_id=board_id, card_id=card_id, actor_id=actor.id
-    )
+    card = await _get_card_or_404(session, board_id=board_id, card_id=card_id, actor_id=actor.id)
     card = await cards_repository.update_card(session, card, title=title, description=description)
     await session.commit()
     return card
@@ -201,9 +197,7 @@ async def delete_card(
     session: AsyncSession, *, actor: Actor, board_id: uuid.UUID, card_id: uuid.UUID
 ) -> None:
     await boards_service.get_board(session, actor=actor, board_id=board_id)
-    card = await _get_card_or_404(
-        session, board_id=board_id, card_id=card_id, actor_id=actor.id
-    )
+    card = await _get_card_or_404(session, board_id=board_id, card_id=card_id, actor_id=actor.id)
     await cards_repository.delete_card(session, card)
     await session.commit()
 
@@ -220,9 +214,7 @@ async def move_card(
     """Destination column plus destination index, resolved in one transaction that
     holds the destination column's row lock (see the module docstring)."""
     await boards_service.get_board(session, actor=actor, board_id=board_id)
-    card = await _get_card_or_404(
-        session, board_id=board_id, card_id=card_id, actor_id=actor.id
-    )
+    card = await _get_card_or_404(session, board_id=board_id, card_id=card_id, actor_id=actor.id)
     await _get_destination_column_or_404(
         session, board_id=board_id, column_id=column_id, actor_id=actor.id
     )

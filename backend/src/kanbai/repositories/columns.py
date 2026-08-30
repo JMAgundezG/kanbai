@@ -77,9 +77,7 @@ async def get_column_by_id(
     return result.scalar_one_or_none()
 
 
-async def lock_column_for_update(
-    session: AsyncSession, column_id: uuid.UUID
-) -> BoardColumn | None:
+async def lock_column_for_update(session: AsyncSession, column_id: uuid.UUID) -> BoardColumn | None:
     """A row-level lock on the column itself, held until the caller's transaction
     ends. It is the serialization point for everything that depends on a column's
     contents: both invariants at stake — `UNIQUE (column_id, position)` and the

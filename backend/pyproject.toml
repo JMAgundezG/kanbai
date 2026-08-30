@@ -44,11 +44,16 @@ packages = ["src/kanbai"]
 
 [tool.poe.tasks]
 dev = "uvicorn kanbai.main:create_app --factory --reload --port 8000"
-lint = "ruff check ."
 typecheck = "mypy src tests"
 test = "pytest"
 openapi = "python -m kanbai.openapi"
 migrate = "alembic upgrade head"
+
+[tool.poe.tasks.lint]
+# `ruff check` alone lets unformatted code through the gate: the formatter needs
+# its own --check, or `poe check` goes green on code `poe format` would rewrite.
+sequence = ["ruff check .", "ruff format --check ."]
+default_item_type = "cmd"
 
 [tool.poe.tasks.format]
 sequence = ["ruff format .", "ruff check --fix ."]
