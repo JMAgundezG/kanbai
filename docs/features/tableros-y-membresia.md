@@ -1,6 +1,6 @@
 # Tableros y membresía
 
-**Introducida por:** [TASK-04](../tasks/TASK-04-tableros-y-membresia.md) · **Última actualización:** 2026-08-30
+**Introducida por:** [TASK-04](../tasks/TASK-04-tableros-y-membresia.md) · **Ampliada por:** [TASK-09](../tasks/TASK-09-agentes-y-api-keys.md) · **Última actualización:** 2026-08-30
 
 El **tablero** es el espacio de trabajo con sus miembros, y la membresía es la unidad
 de autorización de todo el producto: a partir de aquí, "puedo ver esto" significa
@@ -62,6 +62,31 @@ existe porque es miembro de él.
 regla cuenta cuántos `owner` quedan, no quién en concreto se va — si hay más de uno,
 cualquiera de ellos puede quitarse sin problema.
 
+**El techo de permisos de un agente ([TASK-09](../tasks/TASK-09-agentes-y-api-keys.md)).**
+Un agente nunca puede acabar con más acceso a un tablero que su persona
+propietaria (invariante de `CLAUDE.md` §0). Esto se aplica en dos puntos, sin que
+`services/boards.py` lea nunca `actor.kind`: llama a
+`Actor.permission_ceiling_actor_id()`, un método que toda subclase de `Actor`
+responde (`None` para una persona; el id de su persona propietaria para un
+agente — ver `docs/features/agentes-y-api-keys.md`).
+
+- **Al añadir un miembro:** si el actor a añadir tiene techo, su techo debe ya ser
+  miembro de ese tablero con un rol igual o superior al que se le va a conceder.
+  Si no, `409 Conflict`.
+- **Al crear un tablero:** si quien lo crea tiene techo, ese techo se añade
+  también como `owner`, en la misma transacción — un agente nunca es dueño de
+  algo que su persona no pueda ver ni administrar.
+
+No se revoca en cascada si la persona propietaria pierde después su membresía;
+queda anotado como limitación aceptada en la spec de TASK-09.
+
+Ambos puntos toman `boards_repository.lock_board_for_update` antes de leer y
+escribir `board_members` (`add_member` y `remove_member` toman el mismo lock,
+para que sirva de algo entre las dos): sin él, la comprobación del techo es un
+read-then-insert que un `remove_member` concurrente sobre esa misma fila podría
+colar en el hueco — el hallazgo real de la code review de TASK-09, demostrado
+con una prueba de concurrencia (`tests/test_boards.py`).
+
 ## Endpoints
 
 | Método | Ruta | Requiere | Respuesta |
@@ -72,7 +97,7 @@ cualquiera de ellos puede quitarse sin problema.
 | `PATCH` | `/api/v1/boards/{board_id}` | owner | `200 BoardRead` / `404` / `403` |
 | `DELETE` | `/api/v1/boards/{board_id}` | owner | `204` / `404` / `403` |
 | `GET` | `/api/v1/boards/{board_id}/members` | miembro | `200 Page[BoardMemberRead]` / `404` |
-| `POST` | `/api/v1/boards/{board_id}/members` | owner | `201 BoardMemberRead` / `404` / `403` / `409` |
+| `POST` | `/api/v1/boards/{board_id}/members` | owner | `201 BoardMemberRead` / `404` / `403` / `409` (duplicado, o el agente supera a su persona) |
 | `DELETE` | `/api/v1/boards/{board_id}/members/{member_id}` | owner o el propio miembro | `204` / `404` / `403` / `409` |
 
 `BoardRead` incluye `role`: el rol del actor que pregunta en ese tablero concreto —
@@ -91,9 +116,10 @@ silencioso. Cualquier listado futuro reutiliza ambas piezas sin más código.
 ## No entra en esta feature
 
 Columnas y tarjetas (TASK-05, TASK-06), invitaciones por email o alta de personas
-nuevas, permisos por columna o por tarjeta, y el alta de agentes como actores
-(TASK-09) — `POST /boards/{id}/members` recibe un `actor_id` ya existente porque no
-hay, todavía, ningún endpoint que cree o busque actores.
+nuevas, permisos por columna o por tarjeta. `POST /boards/{id}/members` recibe un
+`actor_id` ya existente (de una persona o, desde TASK-09, de un agente dado de
+alta primero en `/api/v1/agents`); no hay endpoint que cree o busque actores desde
+aquí.
 
 ## Contrato
 

@@ -131,7 +131,12 @@ async def list_members(
     summary="Añade un miembro a un tablero (solo el owner; persona o agente por igual)",
     responses={
         **_OWNER_ONLY,
-        HTTPStatus.CONFLICT: {"description": "El actor ya es miembro del tablero."},
+        HTTPStatus.CONFLICT: {
+            "description": (
+                "El actor ya es miembro del tablero, o es un agente cuya persona "
+                "propietaria no tiene en este tablero un rol igual o superior."
+            )
+        },
     },
 )
 async def add_member(

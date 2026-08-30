@@ -4,8 +4,11 @@
 
 El **actor** es el participante que firma toda acción del tablero: persona o agente,
 mismo tipo de dominio. Esta feature modela el actor y deja a las **personas**
-capaces de identificarse con email y contraseña; los agentes llegan en TASK-09
-sobre este mismo modelo, sin tocarlo.
+capaces de identificarse con email y contraseña. Los **agentes**
+([TASK-09](../tasks/TASK-09-agentes-y-api-keys.md)) llegan sobre este mismo
+modelo, sin tocar `actors` ni `people` — ver
+[`agentes-y-api-keys.md`](agentes-y-api-keys.md) para su alta, su autenticación
+por API key, y cómo se integra en `CurrentActor` descrito más abajo.
 
 ## Modelo
 
@@ -52,19 +55,23 @@ tiempo de respuesta no lo delate.
 ## `CurrentActor`
 
 `api/deps.py::get_current_actor` (expuesto como `CurrentActor`) es la única
-dependencia que resuelve quién hace la petición. Hoy solo mira la cookie de sesión;
-TASK-09 añadirá la rama `Authorization: Bearer` **dentro de esta misma función**,
-sin cambiar su firma ni tocar ningún router o servicio que ya dependa de ella — la
-ramificación es sobre qué credencial llegó, nunca sobre `actor.kind` (invariante de
-`CLAUDE.md` § 0).
+dependencia que resuelve quién hace la petición. Prueba primero la cookie de
+sesión; si no hay cookie, prueba la cabecera `Authorization: Bearer <api key>`
+([TASK-09](../tasks/TASK-09-agentes-y-api-keys.md)) — presencia, no validez,
+decide la rama: una cookie presente pero inválida no cae a probar la cabecera. La
+firma no cambió, y ningún router o servicio que dependa de `CurrentActor` sabe ni
+le importa cuál de las dos credenciales resolvió al actor — la ramificación es
+sobre qué credencial llegó, nunca sobre `actor.kind` (invariante de `CLAUDE.md`
+§ 0).
 
 ## No entra en esta feature
 
 Registro público, invitaciones, recuperación de contraseña, verificación de email,
-roles o permisos finos (la membresía de tablero llega en TASK-04), agentes y API
-keys (TASK-09). La creación de una persona existe solo como función de servicio
-interna (`services/auth.py::create_person`), usada por los tests y por futuras
-herramientas de arranque — no hay endpoint HTTP que la exponga todavía.
+roles o permisos finos (la membresía de tablero llega en TASK-04). La creación de
+una persona existe solo como función de servicio interna
+(`services/auth.py::create_person`), usada por los tests y por futuras
+herramientas de arranque — no hay endpoint HTTP que la exponga todavía. Agentes y
+API keys: ver [`agentes-y-api-keys.md`](agentes-y-api-keys.md).
 
 ## Dependencias nuevas
 

@@ -9,6 +9,7 @@ from kanbai.core.config import Settings
 from kanbai.core.exceptions import AuthenticationError
 from kanbai.db.session import get_session
 from kanbai.models.actor import Actor
+from kanbai.services import agents as agents_service
 from kanbai.services import auth as auth_service
 
 
@@ -24,16 +25,24 @@ SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
 async def get_current_actor(request: Request, session: SessionDep, settings: SettingsDep) -> Actor:
-    """The one place that resolves *who is asking*. Today it only reads the
-    person's session cookie; when TASK-09 adds agent API keys, the
-    `Authorization: Bearer` branch is added *inside this function* — trying the
-    cookie, then the header — without changing its signature or touching any
-    router or service that already depends on it. The branch is about which
-    credential arrived, never about the actor's domain type (CLAUDE.md § 0)."""
+    """The one place that resolves *who is asking*: a person's session cookie, or
+    (TASK-09) an agent's `Authorization: Bearer` API key. Presence, not validity,
+    picks the branch — a cookie that is there but invalid raises rather than
+    falling through to the header. Either way this returns a plain `Actor`, and
+    no router or service downstream can tell which branch produced it: the
+    branch is about which credential arrived, never about the actor's domain
+    type (CLAUDE.md § 0)."""
     token = request.cookies.get(settings.session_cookie_name)
-    if not token:
-        raise AuthenticationError()
-    return await auth_service.resolve_actor(session, token)
+    if token:
+        return await auth_service.resolve_actor(session, token)
+
+    authorization = request.headers.get("Authorization")
+    if authorization:
+        scheme, _, credential = authorization.partition(" ")
+        if scheme.lower() == "bearer" and credential:
+            return await agents_service.resolve_actor_by_api_key(session, credential)
+
+    raise AuthenticationError()
 
 
 CurrentActor = Annotated[Actor, Depends(get_current_actor)]

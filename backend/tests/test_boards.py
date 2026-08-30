@@ -1,32 +1,26 @@
 """Boards and membership: creation, listing, permissions, and the invariant that
 membership does not branch on actor kind."""
 
+import asyncio
+import uuid
 from http import HTTPStatus
 from typing import Any
 
 import pytest
 from httpx import AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
 
-from kanbai.models.actor import Actor, Person
+from kanbai.models.actor import Person
+from kanbai.models.board_member import BoardMember
+from kanbai.repositories import actors as actors_repository
+from kanbai.repositories import board_members as board_members_repository
+from kanbai.repositories import boards as boards_repository
+from kanbai.services import agents as agents_service
 from kanbai.services import auth as auth_service
+from kanbai.services import boards as boards_service
 
 OWNER_PASSWORD = "correcto-caballo-batería-grapa"
-
-
-class _AgentDouble(Actor):
-    """Test-only stand-in for the `Agent` subclass TASK-09 will add.
-
-    SQLAlchemy's joined-table inheritance refuses to *read back* a row whose
-    discriminator has no registered subclass — `Actor(kind="agent")` alone raises
-    on the next `select(Actor)`. Declaring this here (single-table: no
-    `__tablename__`, so it adds no column and no table) registers the
-    "agent" polymorphic identity for the duration of the test suite, letting the
-    real repository/service code paths run against an actual second actor kind
-    without adding an `Agent` model to production code ahead of TASK-09's scope.
-    """
-
-    __mapper_args__ = {"polymorphic_identity": "agent"}  # noqa: RUF012
 
 
 @pytest.fixture
@@ -253,11 +247,14 @@ async def test_anadir_miembro_agente_funciona_igual_que_persona(
     client: AsyncClient, owner: Person, db_session: AsyncSession
 ) -> None:
     """The invariant from CLAUDE.md §0: an actor of kind "agent" becomes a board
-    member exactly like a person does — membership never branches on actor kind."""
-    agent = _AgentDouble(display_name="Bot de pruebas")
-    db_session.add(agent)
-    await db_session.flush()
-    await db_session.commit()
+    member exactly like a person does — membership never branches on actor kind.
+    The agent's owner is `owner` itself, so the permission-ceiling check TASK-09
+    adds to `add_member` (see services/boards.py) is trivially satisfied: `owner`
+    is already this board's owner, at least as high a role as the "member" the
+    agent is granted here."""
+    agent = await agents_service.create_agent(
+        db_session, actor=owner, display_name="Bot de pruebas", description=None
+    )
 
     await _login(client, owner.email, OWNER_PASSWORD)
     board = await _create_board(client)
@@ -434,3 +431,104 @@ async def test_quitar_miembro_inexistente_devuelve_404(client: AsyncClient, owne
     )
 
     assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+# --- concurrencia real: el lock del techo de permisos de un agente --------------
+#
+# Igual que las pruebas de concurrencia de test_cards.py: sesiones y conexiones
+# propias, con COMMIT de verdad — la fixture `db_session` mete cada test en un
+# SAVEPOINT que siempre se revierte, así que sobre ella no hay concurrencia real
+# que demostrar.
+#
+# Comprobar solo que `add_member` "se queda esperando" no basta: el INSERT final
+# en `board_members` ya bloquea contra el lock de fila del tablero porque
+# Postgres exige un `FOR KEY SHARE` implícito sobre la fila padre para
+# comprobar la FK — eso pasaría igual sin `lock_board_for_update` en absoluto.
+# Lo que hay que demostrar es que la *lectura* del techo de permisos (antes de
+# ese INSERT) ve el estado posterior al commit de la otra transacción, no una
+# foto anterior — que es exactamente lo que evita el hallazgo de la code
+# review. Por eso la otra transacción, mientras sostiene el lock, deja sin
+# comprometer justo la fila de `board_members` que decide si la comprobación
+# del techo pasa o falla: si `add_member` lee antes de esperar el lock, ve la
+# ausencia de esa fila y rechaza al momento; si espera el lock (el fix), ve la
+# fila ya comprometida y acepta.
+
+
+async def _cleanup_board_and_actors(
+    engine: AsyncEngine, *, board_id: uuid.UUID, actor_ids: list[uuid.UUID]
+) -> None:
+    async with engine.connect() as cleanup:
+        await cleanup.execute(text("DELETE FROM boards WHERE id = :id"), {"id": board_id})
+        for actor_id in actor_ids:
+            await cleanup.execute(text("DELETE FROM actors WHERE id = :id"), {"id": actor_id})
+        await cleanup.commit()
+
+
+async def test_anadir_agente_lee_el_techo_de_permisos_tras_esperar_el_lock(
+    engine: AsyncEngine,
+) -> None:
+    """El hallazgo de la code review de TASK-09, demostrado con una
+    interleaving real: si `add_member` no esperase el lock del tablero antes de
+    comprobar el techo de permisos del agente, esta prueba fallaría — no por
+    quedarse "colgada" sin más, sino porque devolvería el `ConflictError`
+    equivocado casi al instante, en vez de esperar y aceptar."""
+    unique_owner_email = f"lock-owner-{uuid.uuid4().hex}@example.com"
+    unique_ceiling_email = f"lock-ceiling-{uuid.uuid4().hex}@example.com"
+    async with AsyncSession(engine, expire_on_commit=False) as setup_session:
+        owner = await auth_service.create_person(
+            setup_session,
+            email=unique_owner_email,
+            password="cualquier-cosa-larga-1234",
+            display_name="Owner del lock",
+        )
+        ceiling_person = await auth_service.create_person(
+            setup_session,
+            email=unique_ceiling_email,
+            password="cualquier-cosa-larga-1234",
+            display_name="Persona techo",
+        )
+        board, _ = await boards_service.create_board(setup_session, actor=owner, name="Con lock")
+        agent = await agents_service.create_agent(
+            setup_session, actor=ceiling_person, display_name="Bot del lock", description=None
+        )
+        owner_id, ceiling_id, agent_id, board_id = owner.id, ceiling_person.id, agent.id, board.id
+
+    try:
+        holder_session = AsyncSession(engine, expire_on_commit=False)
+        await boards_repository.lock_board_for_update(holder_session, board_id)
+        # Sin comprometer: `ceiling_person` aún no es visible como miembro para
+        # ninguna otra transacción hasta que `holder_session` haga commit.
+        await board_members_repository.add_member(
+            holder_session, board_id=board_id, actor_id=ceiling_id, role="member"
+        )
+        try:
+
+            async def _add_agent_in_own_session() -> BoardMember:
+                async with AsyncSession(engine, expire_on_commit=False) as session:
+                    actor = await actors_repository.get_actor_by_id(session, owner_id)
+                    assert actor is not None
+                    return await boards_service.add_member(
+                        session,
+                        actor=actor,
+                        board_id=board_id,
+                        new_actor_id=agent_id,
+                        role="member",
+                    )
+
+            racing_task = asyncio.ensure_future(_add_agent_in_own_session())
+            _, pending = await asyncio.wait({racing_task}, timeout=0.5)
+            assert racing_task in pending, (
+                "add_member no debería resolver el techo de permisos del agente "
+                "mientras la membresía de su persona propietaria sigue sin "
+                "comprometerse en otra transacción"
+            )
+
+            await holder_session.commit()
+            member = await asyncio.wait_for(racing_task, timeout=5)
+            assert member.actor_id == agent_id
+        finally:
+            await holder_session.close()
+    finally:
+        await _cleanup_board_and_actors(
+            engine, board_id=board_id, actor_ids=[owner_id, ceiling_id, agent_id]
+        )

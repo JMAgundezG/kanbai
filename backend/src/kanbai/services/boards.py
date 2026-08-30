@@ -4,6 +4,25 @@ Nothing here — or in any repository it calls — branches on `actor.kind`. An 
 is a board member exactly like a person is (CLAUDE.md § 0): the only place `kind`
 is ever read is inside ActorRead, which TASK-03 already built to not need changes
 for TASK-09.
+
+TASK-09 adds one thing that *is* about agents without ever reading `kind`:
+`create_board` and `add_member` call `Actor.permission_ceiling_actor_id()`, a
+method every actor answers (a plain `Actor`/`Person` always with `None`, an
+`Agent` with its owning person's id — see models/actor.py and models/agent.py).
+This is what keeps "an agent never outranks the person who created it"
+(CLAUDE.md § 0) true: an agent can never end up a member — at a role its owner
+does not also hold — of a board its owner cannot also reach, and creating a
+board as an agent hands the owning person the same access, in the same
+transaction.
+
+`add_member` and `remove_member` both take `boards_repository.lock_board_for_update`
+before touching `board_members`, the same primitive `services/columns.py` uses to
+serialize writes on a board's columns. Without it, the ceiling check above is a
+plain read-then-insert: a concurrent `remove_member` on the ceiling actor's own
+membership could commit in the gap between the check and the insert, and the
+agent would be granted access whose ceiling had, by commit time, already been
+pulled out from under it. The lock makes the two operations serialize instead —
+whichever commits first is the one the other observes.
 """
 
 import uuid
@@ -20,8 +39,12 @@ from kanbai.repositories import boards as boards_repository
 
 OWNER = "owner"
 MEMBER = "member"
+_ROLE_RANK = {MEMBER: 0, OWNER: 1}
 
 _BOARD_NOT_FOUND_MESSAGE = "El tablero solicitado no existe."
+_EXCEEDS_OWNER_MESSAGE = (
+    "El agente no puede tener en este tablero más permisos que su persona propietaria."
+)
 
 
 async def list_boards(
@@ -47,6 +70,14 @@ async def create_board(session: AsyncSession, *, actor: Actor, name: str) -> tup
     await board_members_repository.add_member(
         session, board_id=board.id, actor_id=actor.id, role=OWNER
     )
+    # An agent's owning person always gets the same access to a board the agent
+    # just created — otherwise the agent would own something its person cannot
+    # even see, exceeding the permissions of whoever created it.
+    ceiling_actor_id = actor.permission_ceiling_actor_id()
+    if ceiling_actor_id is not None:
+        await board_members_repository.add_member(
+            session, board_id=board.id, actor_id=ceiling_actor_id, role=OWNER
+        )
     await columns_service.seed_default_columns(session, board_id=board.id)
     await session.commit()
     return board, OWNER
@@ -101,9 +132,22 @@ async def add_member(
     if requester_role != OWNER:
         raise AuthorizationError("Solo el owner puede añadir miembros.")
 
+    # Held until commit: serializes this against any other membership write on
+    # the same board (see the module docstring) — in particular against a
+    # concurrent `remove_member` racing the ceiling check just below.
+    await boards_repository.lock_board_for_update(session, board_id)
+
     target_actor = await actors_repository.get_actor_by_id(session, new_actor_id)
     if target_actor is None:
         raise NotFoundError("El actor indicado no existe.")
+
+    ceiling_actor_id = target_actor.permission_ceiling_actor_id()
+    if ceiling_actor_id is not None:
+        ceiling_membership = await board_members_repository.get_member_by_actor(
+            session, board_id, ceiling_actor_id
+        )
+        if ceiling_membership is None or _ROLE_RANK[ceiling_membership.role] < _ROLE_RANK[role]:
+            raise ConflictError(_EXCEEDS_OWNER_MESSAGE)
 
     existing = await board_members_repository.get_member_by_actor(session, board_id, new_actor_id)
     if existing is not None:
@@ -120,6 +164,11 @@ async def remove_member(
     session: AsyncSession, *, actor: Actor, board_id: uuid.UUID, member_id: uuid.UUID
 ) -> None:
     _, requester_role = await get_board(session, actor=actor, board_id=board_id)
+
+    # Same lock `add_member` takes, and for the same reason: without it, this
+    # removal and a concurrent `add_member`'s ceiling check could each read the
+    # membership state from before the other's write.
+    await boards_repository.lock_board_for_update(session, board_id)
 
     member = await board_members_repository.get_member_by_id(session, board_id, member_id)
     if member is None:

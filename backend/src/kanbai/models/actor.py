@@ -6,6 +6,20 @@ a person needs (email, password hash). TASK-09 adds an `agents` table the same w
 without migrating or touching either of these tables. No query outside the
 authentication layer branches on `kind` — loading an actor by id already returns the
 concrete subclass.
+
+`with_polymorphic="*"` on the base mapper: a query against `Actor` (e.g.
+`repositories.actors.get_actor_by_id`) outer-joins every subclass table
+(`people`, `agents`) and populates their columns in the same round trip, instead
+of the SQLAlchemy default of loading only the base columns and lazily fetching a
+subclass's own columns the first time Python code touches one. That default is
+fine as long as nothing reads a subclass-only attribute on a polymorphically
+loaded `Actor` — true until TASK-09: `permission_ceiling_actor_id` (below) is the
+first thing in this codebase to read a subclass column (`Agent.owner_person_id`)
+off an object that came from a base-class query, and in a genuinely fresh
+session (every real request gets one — see db/session.py) that lazy fetch runs
+outside of any `await`, which SQLAlchemy's async support cannot do: it raises
+`MissingGreenlet` instead of quietly blocking. `with_polymorphic` closes that
+trap for every future subclass column too, not just this one.
 """
 
 import uuid
@@ -37,7 +51,21 @@ class Actor(Base):
     __mapper_args__ = {  # noqa: RUF012
         "polymorphic_identity": "actor",
         "polymorphic_on": "kind",
+        "with_polymorphic": "*",
     }
+
+    def permission_ceiling_actor_id(self) -> uuid.UUID | None:
+        """The actor whose access this actor's access must never exceed, or
+        `None` if none applies. A person has no ceiling: their access derives
+        only from their own memberships. `Agent` (models/agent.py) is the only
+        subclass that overrides this, returning its owning person's id.
+
+        This is the polymorphic hook `services/boards.py` calls instead of
+        reading `kind` to keep "an agent never outranks the person who created
+        it" (CLAUDE.md § 0) true without a single `if actor.kind == "agent"`
+        anywhere in the domain.
+        """
+        return None
 
 
 class Person(Actor):

@@ -16,10 +16,10 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 | TASK-06 | [Tarjetas: CRUD y movimiento](TASK-06-tarjetas.md) | Alta | TASK-05 | Completada | Claude | [plan](../plans/plan-TASK-06.md) · [spec](../plans/spec-TASK-06.md) · [feature](../features/tarjetas.md) |
 | TASK-07 | [Frontend: sesión y armazón](TASK-07-frontend-sesion.md) | Alta | TASK-02, TASK-03 | Pendiente | — | Acceso, rutas protegidas y layout común · desbloqueada por TASK-03 |
 | TASK-08 | [Frontend: tablero con arrastrar y soltar](TASK-08-frontend-tablero.md) | Alta | TASK-06, TASK-07 | Pendiente | — | Arrastrar accesible, también con teclado |
-| TASK-09 | [Agentes como actores: alta y API keys](TASK-09-agentes-y-api-keys.md) | Alta | TASK-03 | Pendiente | — | **La tarea que hace distinto a kanbai**; ningún dominio paralelo · desbloqueada por TASK-03 |
-| TASK-10 | [Asignación y reclamación de tarjetas](TASK-10-asignacion-y-reclamacion.md) | Alta | TASK-06, TASK-09 | Pendiente | — | Evita el trabajo duplicado entre agentes; reclamación con vencimiento |
+| TASK-09 | [Agentes como actores: alta y API keys](TASK-09-agentes-y-api-keys.md) | Alta | TASK-03 | Completada | Claude | **La tarea que hace distinto a kanbai**; ningún dominio paralelo · [plan](../plans/plan-TASK-09.md) · [spec](../plans/spec-TASK-09.md) · [feature](../features/agentes-y-api-keys.md) |
+| TASK-10 | [Asignación y reclamación de tarjetas](TASK-10-asignacion-y-reclamacion.md) | Alta | TASK-06, TASK-09 | Pendiente | — | Evita el trabajo duplicado entre agentes; reclamación con vencimiento · desbloqueada por TASK-09 |
 | TASK-11 | [Comentarios en tarjetas](TASK-11-comentarios.md) | Alta | TASK-06 | Pendiente | — | **Desbloqueada** por TASK-06 |
-| TASK-12 | [Registro de actividad (eventos)](TASK-12-registro-de-actividad.md) | Alta | TASK-06, TASK-09 | Pendiente | — | Trazabilidad; alimenta el tiempo real de TASK-14 |
+| TASK-12 | [Registro de actividad (eventos)](TASK-12-registro-de-actividad.md) | Alta | TASK-06, TASK-09 | Pendiente | — | Trazabilidad; alimenta el tiempo real de TASK-14 · desbloqueada por TASK-09 |
 | TASK-13 | [API de agentes: cola de trabajo](TASK-13-api-de-agentes.md) | Alta | TASK-10, TASK-11, TASK-12 | Pendiente | — | Cierra el bucle: pedir → reclamar → comentar → mover |
 | TASK-14 | [Tiempo real: eventos en vivo](TASK-14-tiempo-real.md) | Media | TASK-08, TASK-12 | Pendiente | — | SSE; que se vea trabajar al agente sin recargar |
 | TASK-15 | [Frontend: detalle de tarjeta](TASK-15-frontend-detalle-tarjeta.md) | Media | TASK-08, TASK-11, TASK-12 | Pendiente | — | Hilo, actividad y distintivo persona/agente |
@@ -30,11 +30,11 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 
 | Estado | Nº |
 |--------|----|
-| Pendiente | 11 |
+| Pendiente | 10 |
 | En progreso | 0 |
 | En revisión | 0 |
 | Bloqueada | 0 |
-| Completada | 6 |
+| Completada | 7 |
 | **Total** | **17** |
 
 ## Orden sugerido
