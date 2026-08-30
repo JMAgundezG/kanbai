@@ -1,0 +1,106 @@
+{
+  "components": {
+    "schemas": {
+      "HealthRead": {
+        "description": "Liveness: the process is up. Says nothing about its dependencies.",
+        "properties": {
+          "status": {
+            "const": "ok",
+            "default": "ok",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "title": "HealthRead",
+        "type": "object"
+      },
+      "ReadinessRead": {
+        "description": "Readiness: the process can actually serve traffic.",
+        "properties": {
+          "database": {
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "title": "Database",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "error"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "database"
+        ],
+        "title": "ReadinessRead",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "summary": "API de tableros kanban de kanbai.",
+    "title": "kanbai",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "readiness_api_v1_health_ready_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessRead"
+                }
+              }
+            },
+            "description": "La base de datos no está disponible."
+          }
+        },
+        "summary": "Comprobación de disponibilidad, incluida la base de datos",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "liveness_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthRead"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Comprobación de vida del servicio",
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+/* Order is everything here — and it was verified in a browser, not assumed.
+ *
+ * `bootstrap` sits AFTER `base`: Tailwind's preflight zeroes margin and padding on
+ * every element (`*, ::before, ::after { margin: 0; padding: 0 }`), and layer order
+ * beats specificity, so a bootstrap layer declared before `base` loses its grid
+ * gutters and container padding entirely.
+ *
+ * It stays BEFORE `components` and `utilities`, so HeroUI's components and Tailwind's
+ * utilities still win every conflict against Bootstrap.
+ *
+ * Only the grid is imported: bootstrap.css would bring Reboot, which fights the
+ * preflight and wrecks HeroUI.
+ */
+@layer theme, base, bootstrap, components, utilities;
+
+@import "bootstrap/dist/css/bootstrap-grid.css" layer(bootstrap);
+
+/* HeroUI requires tailwindcss to be imported first. */
+@import "tailwindcss";
+@import "@heroui/styles";

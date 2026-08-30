@@ -1,0 +1,35 @@
+"""Domain errors.
+
+Each subclass carries the HTTP status it maps to, so `main.py` needs a single
+handler for the whole hierarchy. Messages are user-facing and therefore Spanish,
+and never leak internals (SQL, paths, tracebacks).
+"""
+
+from http import HTTPStatus
+
+
+class KanbaiError(Exception):
+    status_code: int = HTTPStatus.INTERNAL_SERVER_ERROR
+    default_message: str = "Error interno del servidor."
+
+    def __init__(self, message: str | None = None) -> None:
+        self.message = message or self.default_message
+        super().__init__(self.message)
+
+
+class NotFoundError(KanbaiError):
+    """Also used when a resource exists but belongs to someone else: we answer 404
+    rather than 403 so the response does not confirm that it exists."""
+
+    status_code = HTTPStatus.NOT_FOUND
+    default_message = "El recurso solicitado no existe."
+
+
+class ConflictError(KanbaiError):
+    status_code = HTTPStatus.CONFLICT
+    default_message = "El recurso entra en conflicto con otro que ya existe."
+
+
+class ValidationError(KanbaiError):
+    status_code = HTTPStatus.UNPROCESSABLE_ENTITY
+    default_message = "Los datos enviados no son válidos."

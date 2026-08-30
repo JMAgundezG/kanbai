@@ -1,0 +1,94 @@
+[project]
+name = "kanbai"
+description = "kanbai API — kanban boards backend"
+readme = "README.md"
+authors = [
+    { name = "José Manuel Agúndez García", email = "jmagundezg@gmail.com" }
+]
+requires-python = ">=3.14"
+dynamic = ["version"]
+dependencies = [
+    "alembic>=1.19.1",
+    "fastapi>=0.141.1",
+    "psycopg[binary,pool]>=3.3.4",
+    "pydantic>=2.13.5",
+    "pydantic-settings>=2.15.0",
+    "sqlalchemy[asyncio]>=2.0.52",
+    "uvicorn[standard]>=0.52.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.3.1",
+    "poethepoet>=0.48.0",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.16.5",
+]
+
+[tool.hatch.version]
+path = "src/kanbai/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kanbai"]
+
+# --- task runner -------------------------------------------------------------
+
+[tool.poe.tasks]
+dev = "uvicorn kanbai.main:create_app --factory --reload --port 8000"
+lint = "ruff check ."
+typecheck = "mypy src tests"
+test = "pytest"
+openapi = "python -m kanbai.openapi"
+migrate = "alembic upgrade head"
+
+[tool.poe.tasks.format]
+sequence = ["ruff format .", "ruff check --fix ."]
+default_item_type = "cmd"
+
+[tool.poe.tasks.check]
+sequence = ["lint", "typecheck", "test"]
+default_item_type = "ref"
+
+# --- quality gates -----------------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+extend-exclude = ["src/kanbai/migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "UP", "B", "C4", "SIM", "ASYNC", "T20", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Alembic's generated env.py keeps its own conventions.
+"src/kanbai/migrations/env.py" = ["E402", "T20"]
+# The OpenAPI exporter is a CLI: printing where it wrote the file is the point.
+"src/kanbai/openapi.py" = ["T20"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+exclude = ["^src/kanbai/migrations/versions/"]
+
+[[tool.mypy.overrides]]
+# Alembic ships no stubs for the runtime `context`/`op` proxies used inside env.py.
+module = "kanbai.migrations.*"
+ignore_errors = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers --strict-config"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+# Tests share the session-scoped loop; otherwise the session-scoped engine would
+# hand out connections bound to a loop that has already closed.
+asyncio_default_test_loop_scope = "session"
