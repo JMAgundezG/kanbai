@@ -1,6 +1,6 @@
 # Plan · TASK-17 · Integración continua y entorno reproducible
 
-**Estado:** En progreso · **Fase:** Implementación · **Iniciado:** 2026-09-08 · **Responsable:** Codex
+**Estado:** Completada · **Fase:** Cerrada · **Iniciado:** 2026-09-08 · **Cerrado:** 2026-09-09 · **Responsable:** Codex
 **Tarea:** [TASK-17](../tasks/TASK-17-ci-y-entorno.md)
 
 ## Objetivo
@@ -74,7 +74,7 @@ backend excluye `tests/`, por lo que no es una imagen preparada para la suite de
 
 - [x] `docker compose up -d db` y las instrucciones del `README.md` dejan el proyecto
       funcionando desde un clon limpio.
-- [ ] La integración continua pasa en verde sobre el estado actual del repositorio.
+- [x] La integración continua pasa en verde sobre el estado actual del repositorio.
 - [x] Falla, y se ve por qué, si un test falla o si queda una migración sin generar.
 - [x] Los tests corren contra **PostgreSQL real**, no SQLite (`AGENTS.md` § 2).
 
@@ -136,8 +136,8 @@ backend excluye `tests/`, por lo que no es una imagen preparada para la suite de
   documentado en el README. Ambos entornos efímeros fueron desmontados con sus
   volúmenes al terminar.
 
-## Continuación
+## Cierre
 
-El remoto GitHub ya está configurado. Falta aplicar los hallazgos de la revisión,
-publicar el workflow y registrar una ejecución con los tres jobs en verde. Hasta
-entonces no se marca la tarea En revisión ni se cierra.
+La revisión independiente fue aprobada tras corregir los hallazgos y se publicó el
+workflow. La [ejecución 34340591517](https://github.com/JMAgundezG/kanbai/actions/runs/34340591517)
+terminó con los jobs de backend, frontend y humo de Compose en verde.

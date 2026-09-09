@@ -1,6 +1,6 @@
 # Spec · TASK-17 · Integración continua y entorno reproducible
 
-**Estado:** En progreso · **Fase:** Implementación · **Creada:** 2026-09-08
+**Estado:** Completada · **Fase:** Cerrada · **Creada:** 2026-09-08 · **Cerrado:** 2026-09-09
 **Plan:** [plan-TASK-17](plan-TASK-17.md) · **Tarea:** [TASK-17](../tasks/TASK-17-ci-y-entorno.md)
 **Responsable:** Codex · **Aprobación:** Aprobada para implementación
 
@@ -260,10 +260,9 @@ sin prometer imágenes idénticas byte a byte.
 - [Caché de setup-uv](https://github.com/astral-sh/setup-uv/blob/main/docs/caching.md): activación e invalidación por manifiestos.
 - [setup-node](https://github.com/actions/setup-node): selector de Node y caché npm por lockfile.
 
-## Estado de verificación y siguiente paso
+## Estado de verificación y cierre
 
 La implementación local dejó en verde las suites, el build, la comprobación de
 migraciones, la sincronía del contrato y dos arranques aislados con PostgreSQL 18. El
-remoto GitHub ya está configurado. La tarea continúa **En progreso** hasta publicar el
-workflow y ejecutar los tres jobs en verde; todavía no se ha publicado ningún cambio
-de esta tarea.
+workflow se publicó y la [ejecución 34340591517](https://github.com/JMAgundezG/kanbai/actions/runs/34340591517)
+confirmó en remoto los tres jobs en verde.

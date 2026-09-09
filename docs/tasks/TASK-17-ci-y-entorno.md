@@ -23,16 +23,15 @@ que levantar el proyecto desde cero sea un comando y no una sesión de arqueolog
 
 ## Estado de implementación
 
-La implementación y las verificaciones locales se completaron el 2026-09-09. El remoto
-GitHub ya está configurado; la tarea continúa **En progreso** hasta publicar el
-workflow y registrar los tres jobs en verde. No se ha publicado todavía ningún cambio
-de esta tarea.
+Completada el 2026-09-09. La implementación y las verificaciones locales están
+publicadas, y los tres jobs de GitHub Actions finalizaron correctamente en la
+[ejecución 34340591517](https://github.com/JMAgundezG/kanbai/actions/runs/34340591517).
 
 ## Criterios de aceptación
 
 - [x] `docker compose up -d db` y las instrucciones del `README.md` dejan el proyecto
       funcionando desde un clon limpio.
-- [ ] La integración continua pasa en verde sobre el estado actual del repositorio.
+- [x] La integración continua pasa en verde sobre el estado actual del repositorio.
 - [x] Falla, y se ve por qué, si un test falla o si queda una migración sin generar.
 - [x] Los tests corren contra **PostgreSQL real**, no SQLite (`AGENTS.md` § 2).
 

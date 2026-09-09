@@ -24,17 +24,17 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 | TASK-14 | [Tiempo real: eventos en vivo](TASK-14-tiempo-real.md) | Media | TASK-08, TASK-12 | Pendiente | — | SSE; que se vea trabajar al agente sin recargar |
 | TASK-15 | [Frontend: detalle de tarjeta](TASK-15-frontend-detalle-tarjeta.md) | Media | TASK-08, TASK-11, TASK-12 | Pendiente | — | Hilo, actividad y distintivo persona/agente |
 | TASK-16 | [Frontend: gestión de agentes](TASK-16-frontend-gestion-agentes.md) | Media | TASK-07, TASK-09 | Pendiente | — | Alta, API key visible una sola vez, revocación · desbloqueada por TASK-07 |
-| TASK-17 | [Integración continua y entorno](TASK-17-ci-y-entorno.md) | Media | TASK-01, TASK-02 | En progreso | Codex | Remoto GitHub configurado · pendiente de publicar el workflow y ejecutar CI |
+| TASK-17 | [Integración continua y entorno](TASK-17-ci-y-entorno.md) | Media | TASK-01, TASK-02 | Completada | Codex | CI verde: calidad backend/frontend y humo Compose · [plan](../plans/plan-TASK-17.md) · [spec](../plans/spec-TASK-17.md) · [feature](../features/ci-y-entorno.md) |
 
 ## Resumen
 
 | Estado | Nº |
 |--------|----|
 | Pendiente | 7 |
-| En progreso | 1 |
+| En progreso | 0 |
 | En revisión | 0 |
 | Bloqueada | 0 |
-| Completada | 9 |
+| Completada | 10 |
 | **Total** | **17** |
 
 ## Orden sugerido
