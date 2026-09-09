@@ -1,6 +1,7 @@
 # TASK-08 · Frontend: vista del tablero con arrastrar y soltar
 
 **Prioridad:** Alta · **Depende de:** TASK-06, TASK-07
+**Estado:** Completada · **Cerrada:** 2026-09-09
 
 ## Objetivo
 
@@ -25,16 +26,17 @@ moverse solas las tarjetas que gestiona un agente.
 
 ## Criterios de aceptación
 
-- [ ] Arrastrar una tarjeta a otra columna persiste el cambio y sobrevive a recargar.
-- [ ] La misma operación se puede completar **solo con teclado**.
-- [ ] Si la API falla, la tarjeta vuelve visualmente a su sitio y se avisa al usuario.
-- [ ] Un tablero sin tarjetas muestra un estado vacío con sentido, no una columna en
+- [x] Arrastrar una tarjeta a otra columna persiste el cambio y sobrevive a recargar.
+- [x] La misma operación se puede completar **solo con teclado**.
+- [x] Si la API falla, la tarjeta vuelve visualmente a su sitio y se avisa al usuario.
+- [x] Un tablero sin tarjetas muestra un estado vacío con sentido, no una columna en
       blanco.
-- [ ] Una fila `.row` / `.col-*` maqueta las columnas sin romper los estilos de HeroUI.
-- [ ] `npm run check` en verde.
+- [x] Una fila `.row` / `.col-*` maqueta las columnas sin romper los estilos de HeroUI.
+- [x] `npm run check` en verde.
+- [x] Un 404 al mover revierte la tarjeta y muestra un error genérico.
 
 ## Notas técnicas
 
-- La librería de arrastrar y soltar se justifica en la spec (`CLAUDE.md` § 7);
+- La librería de arrastrar y soltar se justifica en la spec (`AGENTS.md` § 7);
   preferencia por una que conviva con React Aria, en la que se apoya HeroUI.
 - Componentes tontos + hooks con la lógica: el componente de tarjeta no llama a la API.
