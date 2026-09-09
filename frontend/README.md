@@ -1,14 +1,19 @@
 # kanbai — frontend
 
 SPA React 19 con HeroUI v3 sobre Tailwind v4. Las convenciones están en el
-[`CLAUDE.md`](../CLAUDE.md) de la raíz.
+[`AGENTS.md`](../AGENTS.md) de la raíz.
 
 ## Puesta en marcha
 
 ```bash
-docker compose up -d db          # desde la raíz
-cd ../backend && uv run poe dev  # la API en :8000
-npm install
+# Terminal 1, desde la raíz:
+docker compose up -d db --wait
+cd backend
+uv run poe dev                   # la API en :8000
+
+# Terminal 2, desde la raíz:
+cd frontend
+npm ci
 npm run dev                      # http://localhost:5173
 ```
 

@@ -1,14 +1,13 @@
-# Local development database. Credentials are throwaway values for localhost only.
+# Local development stack. Credentials are throwaway values for localhost only.
 services:
   db:
     image: postgres:18-alpine
-    container_name: kanbai-db
     environment:
       POSTGRES_USER: kanbai
       POSTGRES_PASSWORD: kanbai
       POSTGRES_DB: kanbai
     ports:
-      - "5432:5432"
+      - "127.0.0.1:${KANBAI_DB_PORT:-5432}:5432"
     volumes:
       # postgres:18 expects the mount one level up, at /var/lib/postgresql, and
       # places the cluster in a version-named subdirectory. Mounting .../data
@@ -20,6 +19,57 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      KANBAI_ENVIRONMENT: local
+      KANBAI_LOG_LEVEL: INFO
+      KANBAI_APP_NAME: kanbai
+      KANBAI_API_V1_PREFIX: /api/v1
+      KANBAI_DATABASE_URL: postgresql+psycopg://kanbai:kanbai@db:5432/kanbai
+      KANBAI_DB_ECHO: "false"
+      KANBAI_CORS_ORIGINS: '["http://localhost:${KANBAI_FRONTEND_PORT:-5173}"]'
+      KANBAI_SESSION_COOKIE_NAME: kanbai_session
+      KANBAI_SESSION_TTL_DAYS: "14"
+    ports:
+      - "127.0.0.1:${KANBAI_BACKEND_PORT:-8000}:8000"
+    command: >-
+      /bin/sh -ec 'uv run --no-sync alembic upgrade head &&
+      exec uv run --no-sync uvicorn kanbai.main:create_app --factory --host 0.0.0.0 --port 8000'
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=2).read()
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      VITE_PROXY_TARGET: http://backend:8000
+    ports:
+      - "127.0.0.1:${KANBAI_FRONTEND_PORT:-5173}:5173"
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:5173/').then((response) => { if (!response.ok) process.exit(1) })
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
 volumes:
   kanbai-pgdata:

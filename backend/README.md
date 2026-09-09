@@ -1,14 +1,18 @@
 # kanbai — backend
 
 API FastAPI del proyecto. Las convenciones de arquitectura y calidad están en el
-[`CLAUDE.md`](../CLAUDE.md) de la raíz; aquí solo está lo necesario para arrancar.
+[`AGENTS.md`](../AGENTS.md) de la raíz; aquí solo está lo necesario para arrancar.
 
 ## Puesta en marcha
 
 ```bash
-docker compose up -d db      # desde la raíz del repo
+# Desde la raíz del repositorio:
+docker compose up -d db --wait
+
+# Después, desde backend/:
+cd backend
 cp .env.example .env
-uv sync
+uv sync --locked --dev
 uv run poe migrate
 uv run poe dev               # http://localhost:8000/docs
 ```

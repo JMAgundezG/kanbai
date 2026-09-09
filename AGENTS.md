@@ -1,13 +1,14 @@
-# CLAUDE.md — kanbai
+# AGENTS.md — kanbai
 
 Guía operativa para trabajar en este repositorio. **Léela entera antes de tocar
 código.** Si algo aquí choca con lo que ves en el código, gana el código: avísalo y
 actualiza este documento.
 
-> **Estado del repo (2026-09-09):** TASK-01 a TASK-09 están completadas. Hay actores,
-> sesión, agentes/API keys, tableros, columnas, tarjetas y su vista accesible. La fuente
-> operativa canónica es `AGENTS.md`; este archivo conserva compatibilidad para lectores
-> que aún lo enlacen.
+> **Estado del repo (2026-09-09):** TASK-01 a TASK-09 están completadas. El backend
+> incluye actores, sesión, agentes/API keys, tableros, membresía, columnas y tarjetas.
+> El frontend permite acceder y mover tarjetas por ratón o teclado con actualización
+> optimista y reversión. Reclamaciones, comentarios, eventos y tiempo real siguen
+> pendientes; consulta `docs/tasks/STATUS.md` para el estado vigente.
 
 ---
 
@@ -112,8 +113,7 @@ transacción que se revierte.
 ```
 kanbai/
 ├── README.md                  # qué es kanbai: producto, dominio, invariantes
-├── AGENTS.md                  # guía operativa canónica
-├── CLAUDE.md                  # compatibilidad con enlaces históricos
+├── AGENTS.md                  # este documento
 ├── compose.yaml               # PostgreSQL de desarrollo y de test
 ├── docker/postgres/init.sql   # crea las bases kanbai y kanbai_test
 ├── .agents/skills/            # work-task · spec-task · implement-task · close-task
@@ -178,9 +178,10 @@ de `features/` del frontend no importa de otro `features/`: lo común sube a
 | `uv run poe migrate` | `alembic upgrade head` |
 | `uv run alembic revision --autogenerate -m "..."` | Nueva migración |
 
-La base de datos se levanta desde la raíz con `docker compose up -d db`. Si falta
-`kanbai_test`, el volumen es anterior a `docker/postgres/init.sql`: recréalo con
-`docker compose down -v && docker compose up -d db`.
+La base de datos se levanta desde la raíz con `docker compose up -d db --wait`. Si
+falta `kanbai_test`, el volumen es anterior a `docker/postgres/init.sql`: créala sin
+borrar datos con `docker compose exec db createdb -U kanbai kanbai_test`. Solo si se
+quiere descartar deliberadamente todo el volumen se usa `docker compose down -v`.
 
 Nunca `pip install` ni `python -m venv`: **todo pasa por uv**. Dependencias con
 `uv add` / `uv add --dev`; `uv.lock` se commitea siempre.
@@ -398,3 +399,22 @@ Si un test falla, dilo con su salida; si algo se ha quedado fuera, dilo explíci
 | Cambiar un modelo sin migración | Generar y revisar la migración en la misma tarea |
 | Devolver 403 en recursos ajenos | 404, sin confirmar existencia |
 | Marcar `Completada` sin `close-task` | `/close-task TASK-NN` propaga y cierra |
+
+---
+
+## 10. Entorno reproducible e integración continua
+
+- `docker compose up -d --build --wait` levanta PostgreSQL, backend y frontend; para
+  recarga en host se mantiene `docker compose up -d db --wait` más los comandos de
+  cada subproyecto.
+- Los puertos publicados se pueden cambiar con `KANBAI_DB_PORT`,
+  `KANBAI_BACKEND_PORT` y `KANBAI_FRONTEND_PORT`; sus valores por defecto viven en
+  `.env.example`. No borres volúmenes para solucionar una configuración: conserva los
+  datos y crea `kanbai_test` por separado si un volumen antiguo no la tiene.
+- CI vive en `.github/workflows/ci.yml`: usa lockfiles, PostgreSQL 18 real y ejecuta
+  `alembic check`, las puertas de calidad y un humo de Compose. Las acciones se fijan
+  a commits concretos; actualiza comentario y SHA juntos tras verificar la release.
+- `KANBAI_TEST_DATABASE_URL` es una variable de la shell de pytest, no una clave del
+  `.env` del backend: `Settings(extra="forbid")` la rechaza deliberadamente.
+- `VITE_PROXY_TARGET` se lee al iniciar Vite; expórtala o antepónla al comando, no la
+  copies a `.env.local` esperando que `vite.config.ts` la cargue.

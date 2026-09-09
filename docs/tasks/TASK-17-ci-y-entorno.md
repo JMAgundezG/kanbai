@@ -4,7 +4,7 @@
 
 ## Objetivo
 
-Que la puerta de calidad que describe `CLAUDE.md` § 8 se ejecute sola en cada cambio, y
+Que la puerta de calidad que describe `AGENTS.md` § 8 se ejecute sola en cada cambio, y
 que levantar el proyecto desde cero sea un comando y no una sesión de arqueología.
 
 ## Alcance
@@ -21,13 +21,20 @@ que levantar el proyecto desde cero sea un comando y no una sesión de arqueolog
 - Despliegue, imágenes de producción, entornos remotos.
 - Publicación de artefactos o versionado.
 
+## Estado de implementación
+
+La implementación y las verificaciones locales se completaron el 2026-09-09. El remoto
+GitHub ya está configurado; la tarea continúa **En progreso** hasta publicar el
+workflow y registrar los tres jobs en verde. No se ha publicado todavía ningún cambio
+de esta tarea.
+
 ## Criterios de aceptación
 
-- [ ] `docker compose up -d db` y las instrucciones del `README.md` dejan el proyecto
+- [x] `docker compose up -d db` y las instrucciones del `README.md` dejan el proyecto
       funcionando desde un clon limpio.
 - [ ] La integración continua pasa en verde sobre el estado actual del repositorio.
-- [ ] Falla, y se ve por qué, si un test falla o si queda una migración sin generar.
-- [ ] Los tests corren contra **PostgreSQL real**, no SQLite (`CLAUDE.md` § 2).
+- [x] Falla, y se ve por qué, si un test falla o si queda una migración sin generar.
+- [x] Los tests corren contra **PostgreSQL real**, no SQLite (`AGENTS.md` § 2).
 
 ## Notas técnicas
 

@@ -1,6 +1,6 @@
 # Estado del tablero — kanbai
 
-**Última actualización: 2026-08-30**
+**Última actualización: 2026-09-09**
 
 Estados válidos: `Pendiente · En progreso · En revisión · Bloqueada · Completada`.
 Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
@@ -15,7 +15,7 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 | TASK-05 | [Columnas del tablero](TASK-05-columnas.md) | Alta | TASK-04 | Completada | Claude | Posición como `float` con `UniqueConstraint` aplazable · [plan](../plans/plan-TASK-05.md) · [spec](../plans/spec-TASK-05.md) · [feature](../features/columnas-de-tablero.md) |
 | TASK-06 | [Tarjetas: CRUD y movimiento](TASK-06-tarjetas.md) | Alta | TASK-05 | Completada | Claude | [plan](../plans/plan-TASK-06.md) · [spec](../plans/spec-TASK-06.md) · [feature](../features/tarjetas.md) |
 | TASK-07 | [Frontend: sesión y armazón](TASK-07-frontend-sesion.md) | Alta | TASK-02, TASK-03 | Completada | Claude | Acceso, rutas protegidas y layout común · [plan](../plans/plan-TASK-07.md) · [spec](../plans/spec-TASK-07.md) · [feature](../features/frontend-sesion-y-armazon.md) |
-| TASK-08 | [Frontend: tablero con arrastrar y soltar](TASK-08-frontend-tablero.md) | Alta | TASK-06, TASK-07 | Pendiente | — | Arrastrar accesible, también con teclado · desbloqueada por TASK-07 |
+| TASK-08 | [Frontend: tablero con arrastrar y soltar](TASK-08-frontend-tablero.md) | Alta | TASK-06, TASK-07 | Completada | Codex | Arrastre accesible y reversión probada, incluido 404 genérico · [plan](../plans/plan-TASK-08.md) · [spec](../plans/spec-TASK-08.md) · [feature](../features/frontend-tablero.md) |
 | TASK-09 | [Agentes como actores: alta y API keys](TASK-09-agentes-y-api-keys.md) | Alta | TASK-03 | Completada | Claude | **La tarea que hace distinto a kanbai**; ningún dominio paralelo · [plan](../plans/plan-TASK-09.md) · [spec](../plans/spec-TASK-09.md) · [feature](../features/agentes-y-api-keys.md) |
 | TASK-10 | [Asignación y reclamación de tarjetas](TASK-10-asignacion-y-reclamacion.md) | Alta | TASK-06, TASK-09 | Pendiente | — | Evita el trabajo duplicado entre agentes; reclamación con vencimiento · desbloqueada por TASK-09 |
 | TASK-11 | [Comentarios en tarjetas](TASK-11-comentarios.md) | Alta | TASK-06 | Pendiente | — | **Desbloqueada** por TASK-06 |
@@ -24,17 +24,17 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 | TASK-14 | [Tiempo real: eventos en vivo](TASK-14-tiempo-real.md) | Media | TASK-08, TASK-12 | Pendiente | — | SSE; que se vea trabajar al agente sin recargar |
 | TASK-15 | [Frontend: detalle de tarjeta](TASK-15-frontend-detalle-tarjeta.md) | Media | TASK-08, TASK-11, TASK-12 | Pendiente | — | Hilo, actividad y distintivo persona/agente |
 | TASK-16 | [Frontend: gestión de agentes](TASK-16-frontend-gestion-agentes.md) | Media | TASK-07, TASK-09 | Pendiente | — | Alta, API key visible una sola vez, revocación · desbloqueada por TASK-07 |
-| TASK-17 | [Integración continua y entorno](TASK-17-ci-y-entorno.md) | Media | TASK-01, TASK-02 | Pendiente | — | **Desbloqueada** por TASK-01 y TASK-02: ya se puede arrancar |
+| TASK-17 | [Integración continua y entorno](TASK-17-ci-y-entorno.md) | Media | TASK-01, TASK-02 | En progreso | Codex | Remoto GitHub configurado · pendiente de publicar el workflow y ejecutar CI |
 
 ## Resumen
 
 | Estado | Nº |
 |--------|----|
-| Pendiente | 9 |
-| En progreso | 0 |
+| Pendiente | 7 |
+| En progreso | 1 |
 | En revisión | 0 |
 | Bloqueada | 0 |
-| Completada | 8 |
+| Completada | 9 |
 | **Total** | **17** |
 
 ## Orden sugerido

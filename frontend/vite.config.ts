@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 
+const apiProxyTarget = process.env.VITE_PROXY_TARGET ?? 'http://localhost:8000'
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -17,7 +19,7 @@ export default defineConfig({
       // Dev only: keeps the browser on a single origin, so no CORS and no absolute
       // URLs scattered around the code. A production build needs VITE_API_BASE_URL.
       '/api': {
-        target: 'http://localhost:8000',
+        target: apiProxyTarget,
         changeOrigin: true,
       },
     },
