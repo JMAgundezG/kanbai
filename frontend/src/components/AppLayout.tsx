@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react'
-import { Outlet, useNavigate } from 'react-router'
+import { Link, Outlet, useNavigate } from 'react-router'
 
 import { useCurrentActor, useLogout } from '@/features/auth/hooks'
 
@@ -28,7 +28,11 @@ export function AppLayout() {
     <div className="min-h-screen">
       <header className="border-b border-neutral-200 py-4">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4">
-          <h1 className="text-2xl font-bold">kanbai</h1>
+          <h1 className="text-2xl font-bold">
+            <Link to="/" className="rounded hover:opacity-70">
+              kanbai
+            </Link>
+          </h1>
           {actor ? (
             <div className="flex items-center gap-3">
               <span className="text-sm opacity-80">{actor.display_name}</span>
