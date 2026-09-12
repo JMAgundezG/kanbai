@@ -1,7 +1,7 @@
 """Export the OpenAPI schema to backend/openapi.json.
 
 The file is committed so that a contract change shows up in code review, and the
-frontend can run `npm run gen:api` without a running server.
+frontend can run `pnpm run gen:api` without a running server.
 
 The schema is built from the field defaults only: the environment, the .env file
 and any secrets directory are removed as sources, so the committed contract is

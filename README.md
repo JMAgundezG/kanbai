@@ -68,7 +68,8 @@ Query, with the API types generated from the backend OpenAPI document.
 ## Getting started from scratch
 
 You need Docker Engine or Docker Desktop with Compose v2. To run the applications on the
-host you also need Python 3.14, [uv](https://docs.astral.sh/uv/), Node 24 and npm. No
+host you also need Python 3.14, [uv](https://docs.astral.sh/uv/), Node 24 and pnpm
+(`corepack enable pnpm` installs the pinned version). No
 secrets are required: the Compose credentials are strictly local.
 
 ### Full stack with Docker
@@ -102,13 +103,13 @@ uv run poe migrate
 uv run poe dev
 
 cd ../frontend
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm run dev
 ```
 
 The API uses `localhost:5432`; inside Compose the hostname is `db`. To point the Vite
 proxy at a different API during development, pass it to the process on startup:
-`VITE_PROXY_TARGET=http://localhost:8000 npm run dev`.
+`VITE_PROXY_TARGET=http://localhost:8000 pnpm run dev`.
 
 Older volumes only ran `docker/postgres/init.sql` when they were created. If
 `kanbai_test` is missing, check and create it without dropping the development database:
@@ -119,12 +120,12 @@ docker compose exec db createdb -U kanbai kanbai_test
 
 ## Quality, migrations and CI
 
-The local gates are `uv run poe check` from `backend/` and `npm run check` from
+The local gates are `uv run poe check` from `backend/` and `pnpm run check` from
 `frontend/`. Regenerate the contract with `uv run poe openapi` and the types with
-`npm run gen:api`; both generated files must leave the tree without differences.
+`pnpm run gen:api`; both generated files must leave the tree without differences.
 `uv run alembic check` detects models without a migration, and `uv run poe migrate`
 applies the existing revisions.
 
 The GitHub Actions workflow runs three jobs: backend quality and migrations against a
 real PostgreSQL 18, frontend quality and build, and a full Compose startup. Caches are
-invalidated by `uv.lock` and `package-lock.json`; they do not replace any check.
+invalidated by `uv.lock` and `pnpm-lock.yaml`; they do not replace any check.

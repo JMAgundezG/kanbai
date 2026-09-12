@@ -1,7 +1,7 @@
 # kanbai — frontend
 
-SPA React 19 con HeroUI v3 sobre Tailwind v4. Las convenciones están en el
-[`AGENTS.md`](../AGENTS.md) de la raíz.
+SPA React 19 con HeroUI v3 sobre Tailwind v4, gestionada con pnpm. Las convenciones
+están en el [`AGENTS.md`](../AGENTS.md) de la raíz.
 
 ## Puesta en marcha
 
@@ -13,19 +13,20 @@ uv run poe dev                   # la API en :8000
 
 # Terminal 2, desde la raíz:
 cd frontend
-npm ci
-npm run dev                      # http://localhost:5173
+corepack enable pnpm             # solo la primera vez
+pnpm install --frozen-lockfile
+pnpm run dev                     # http://localhost:5173
 ```
 
 ## Comandos
 
 | Comando | Qué hace |
 |---------|----------|
-| `npm run dev` | Vite en `:5173`, con proxy de `/api` al backend |
-| `npm run gen:api` | Regenera `src/api/schema.d.ts` desde `../backend/openapi.json` |
-| `npm run lint` / `typecheck` / `test` | Pasos sueltos de calidad |
-| `npm run check` | lint + typecheck + test |
-| `npm run build` | Bundle de producción |
+| `pnpm run dev` | Vite en `:5173`, con proxy de `/api` al backend |
+| `pnpm run gen:api` | Regenera `src/api/schema.d.ts` desde `../backend/openapi.json` |
+| `pnpm run lint` / `typecheck` / `test` | Pasos sueltos de calidad |
+| `pnpm run check` | lint + typecheck + test |
+| `pnpm run build` | Bundle de producción |
 
 ## Estilos
 

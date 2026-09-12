@@ -24,6 +24,7 @@ kanbai es un tablero kanban donde personas y agentes colaboran como actores.
 
 - `backend/`: Python 3.14, uv, FastAPI, Pydantic, SQLAlchemy async y Alembic.
 - `frontend/`: React 19, TypeScript, Vite, HeroUI v3, Tailwind CSS v4 y TanStack Query.
+  Se gestiona con pnpm; la versión va fijada en `packageManager` y se instala con Corepack.
 - `compose.yaml`: PostgreSQL 18 y servicios de desarrollo.
 - Las versiones y los comandos vigentes están en `backend/pyproject.toml`,
   `frontend/package.json` y sus lockfiles. Compruébalos antes de cambiar dependencias.
@@ -99,15 +100,15 @@ uv run poe openapi
 Desde `frontend/`:
 
 ```sh
-npm ci
-npm run dev
-npm run check
-npm run build
-npm run gen:api
+pnpm install --frozen-lockfile
+pnpm run dev
+pnpm run check
+pnpm run build
+pnpm run gen:api
 ```
 
 - Para cambios de código, ejecuta las comprobaciones de las partes afectadas.
-  `poe check` y `npm run check` incluyen lint, tipado y tests.
+  `poe check` y `pnpm run check` incluyen lint, tipado y tests.
 - Si cambia la API, regenera primero `backend/openapi.json` y después los tipos del
   frontend con los comandos anteriores; comprueba ambos proyectos.
 - Añade o ajusta tests de comportamiento cuando cambie funcionalidad o se corrija
