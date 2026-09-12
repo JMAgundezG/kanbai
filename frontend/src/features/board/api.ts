@@ -2,6 +2,7 @@ import { apiClient } from '@/api/client'
 import type { components } from '@/api/schema'
 
 export type Board = components['schemas']['BoardRead']
+export type BoardCreate = components['schemas']['BoardCreate']
 export type BoardColumn = components['schemas']['ColumnRead']
 export type Card = components['schemas']['CardRead']
 export type CardMove = components['schemas']['CardMove']
@@ -20,6 +21,11 @@ export const boardKeys = {
  * total is a known limit of this screen, not handled here.
  */
 const MAX_PAGE_SIZE = 100
+
+/** El backend rechaza nombres más largos (`BoardCreate.maxLength`). */
+export const BOARD_NAME_MAX_LENGTH = 200
+
+const UNPROCESSABLE_CONTENT = 422
 
 export async function fetchBoards(): Promise<Board[]> {
   const { data, response } = await apiClient.GET('/api/v1/boards', {
@@ -75,6 +81,22 @@ function extractErrorDetail(error: unknown): string | undefined {
     return typeof error.detail === 'string' ? error.detail : undefined
   }
   return undefined
+}
+
+export async function createBoard(board: BoardCreate): Promise<Board> {
+  const { data, error, response } = await apiClient.POST('/api/v1/boards', { body: board })
+
+  if (data) {
+    return data
+  }
+
+  // El `detail` de un 422 es una lista de errores de Pydantic, en inglés y con los
+  // nombres de campo del backend: se descarta y se responde con texto propio.
+  if (response.status === UNPROCESSABLE_CONTENT) {
+    throw new Error('El nombre del tablero no es válido: debe tener entre 1 y 200 caracteres.')
+  }
+
+  throw new Error(extractErrorDetail(error) ?? 'No se pudo crear el tablero.')
 }
 
 export async function moveCard(boardId: string, cardId: string, move: CardMove): Promise<Card> {

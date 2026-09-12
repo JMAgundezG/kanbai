@@ -4,6 +4,7 @@ import {
   type Card,
   type CardMove,
   boardKeys,
+  createBoard,
   fetchBoard,
   fetchBoardCards,
   fetchBoardColumns,
@@ -16,6 +17,19 @@ export function useBoards() {
   return useQuery({
     queryKey: boardKeys.lists(),
     queryFn: fetchBoards,
+  })
+}
+
+/**
+ * El tablero recién creado no se inserta a mano en la caché: el listado lo ordena y
+ * lo pagina el backend, así que se vuelve a pedir en vez de adivinar dónde encaja.
+ */
+export function useCreateBoard() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createBoard,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: boardKeys.lists() }),
   })
 }
 

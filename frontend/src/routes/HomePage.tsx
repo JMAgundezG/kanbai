@@ -2,12 +2,12 @@ import { Alert, EmptyState, Spinner } from '@heroui/react'
 import { Link } from 'react-router'
 
 import { BackendStatusCard } from '@/features/health/components/BackendStatusCard'
+import { CreateBoardButton } from '@/features/board/components/CreateBoardButton'
 import { useBoards } from '@/features/board/hooks'
 
 /**
  * Landing screen: the actor's boards, each a link into its kanban view
- * (BoardPage, TASK-08). No task covers creating a board from the UI yet, so this
- * stays read-only — boards are created straight against the API for now.
+ * (BoardPage, TASK-08), plus the button that creates one (TASK-18).
  */
 export function HomePage() {
   const boards = useBoards()
@@ -16,7 +16,10 @@ export function HomePage() {
     // .row/.col-* come from Bootstrap's grid; spacing and type come from Tailwind.
     <div className="row g-4">
       <div className="col-12 col-md-6">
-        <h2 className="text-xl font-semibold">Tus tableros</h2>
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-xl font-semibold">Tus tableros</h2>
+          <CreateBoardButton />
+        </div>
 
         {boards.isPending ? (
           <div className="flex items-center gap-3 py-4">
@@ -34,7 +37,7 @@ export function HomePage() {
 
         {boards.data && boards.data.length === 0 ? (
           <EmptyState className="rounded border border-dashed border-neutral-300 p-6 text-center opacity-70">
-            Todavía no perteneces a ningún tablero.
+            Todavía no perteneces a ningún tablero. Crea el primero con «Nuevo tablero».
           </EmptyState>
         ) : null}
 

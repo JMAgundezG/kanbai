@@ -1,6 +1,6 @@
 # Estado del tablero — kanbai
 
-**Última actualización: 2026-09-09**
+**Última actualización: 2026-09-12**
 
 Estados válidos: `Pendiente · En progreso · En revisión · Bloqueada · Completada`.
 Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
@@ -25,6 +25,7 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 | TASK-15 | [Frontend: detalle de tarjeta](TASK-15-frontend-detalle-tarjeta.md) | Media | TASK-08, TASK-11, TASK-12 | Pendiente | — | Hilo, actividad y distintivo persona/agente |
 | TASK-16 | [Frontend: gestión de agentes](TASK-16-frontend-gestion-agentes.md) | Media | TASK-07, TASK-09 | Pendiente | — | Alta, API key visible una sola vez, revocación · desbloqueada por TASK-07 |
 | TASK-17 | [Integración continua y entorno](TASK-17-ci-y-entorno.md) | Media | TASK-01, TASK-02 | Completada | Codex | CI verde: calidad backend/frontend y humo Compose · [plan](../plans/plan-TASK-17.md) · [spec](../plans/spec-TASK-17.md) · [feature](../features/ci-y-entorno.md) |
+| TASK-18 | [Frontend: crear tablero desde la interfaz](TASK-18-frontend-crear-tablero.md) | Alta | TASK-04, TASK-07 | En revisión | Claude | Solo frontend: el endpoint ya existe desde TASK-04 · [plan](../plans/plan-TASK-18.md) · [spec](../plans/spec-TASK-18.md) |
 
 ## Resumen
 
@@ -32,10 +33,10 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 |--------|----|
 | Pendiente | 7 |
 | En progreso | 0 |
-| En revisión | 0 |
+| En revisión | 1 |
 | Bloqueada | 0 |
 | Completada | 10 |
-| **Total** | **17** |
+| **Total** | **18** |
 
 ## Orden sugerido
 
@@ -51,19 +52,20 @@ Una tarea por archivo en `docs/tasks/TASK-NN-<slug>.md` (plantilla:
 7. TASK-06 — tarjetas
 8. TASK-07 — frontend: sesión y armazón
 9. TASK-08 — frontend: tablero con arrastrar y soltar
+10. TASK-18 — frontend: crear tablero desde la interfaz
 
 **Fase 2 — entran los agentes**
-10. TASK-09 — agentes y API keys
-11. TASK-10 — asignación y reclamación
-12. TASK-11 — comentarios
-13. TASK-12 — registro de actividad
-14. TASK-13 — API de agentes
+11. TASK-09 — agentes y API keys
+12. TASK-10 — asignación y reclamación
+13. TASK-11 — comentarios
+14. TASK-12 — registro de actividad
+15. TASK-13 — API de agentes
 
 **Fase 3 — la colaboración se ve**
-15. TASK-14 — tiempo real
-16. TASK-15 — detalle de tarjeta
-17. TASK-16 — gestión de agentes
+16. TASK-14 — tiempo real
+17. TASK-15 — detalle de tarjeta
+18. TASK-16 — gestión de agentes
 
-Las tareas de prioridad **Alta** (TASK-01 a TASK-13) son el corte mínimo para que
+Las tareas de prioridad **Alta** (TASK-01 a TASK-13 y TASK-18) son el corte mínimo para que
 kanbai sea lo que dice ser: un tablero donde un agente y una persona trabajan sobre las
 mismas tarjetas. Las de prioridad **Media** completan la experiencia y el entorno.
